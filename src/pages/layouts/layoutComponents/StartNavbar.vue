@@ -52,6 +52,20 @@
         >mdi-material-design</v-icon>
         Material design icons
         </v-btn>
+      <v-btn
+        text
+        class="ma-2"
+        @click="change1"
+      >
+        Изменить
+      </v-btn>
+      <v-btn
+        text
+        class="ma-2"
+        to="/user"
+      >
+        user
+      </v-btn>
         <Date />
 
       <v-spacer />
@@ -127,7 +141,9 @@ export default {
       items: [
         { title: 'Профиль', url: '/profile' },
         { title: 'Выйти', url: '/logout' }
-      ]
+      ],
+      testBtns: ['MainPagePreloader', 'mainLCR', 'mainLC', 'mainCR', 'mainC'],
+      counter: 0
     }
   },
   components: {
@@ -136,6 +152,11 @@ export default {
   methods: {
     profile () {
 
+    },
+    change1 () {
+      const val = this.testBtns[this.counter]
+      this.$store.dispatch('chgModes', val)
+      this.counter !== 4 ? this.counter++ : this.counter = 0
     },
     async logout () {
       // console.log(111)

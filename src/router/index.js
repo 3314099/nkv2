@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import firebase from 'firebase/app'
 import Register from '@/pages/views/Large/guest/Register'
 import Login from '@/pages/views/Large/guest/Login'
-import content from '@/pages/views/content'
+import MainPage from '@/pages/views/MainPage'
 import Landing from '@/pages/views/Large/guest/Landing'
 Vue.use(VueRouter)
 
@@ -32,57 +32,57 @@ const routes = [
   },
   {
     path: '/user',
-    name: 'content',
+    name: 'user',
     meta: {
       layuot: 'MainLayout',
       auth: true
     },
-    component: content
+    component: MainPage
   },
   {
     path: '/targets',
-    name: 'content',
+    name: 'targets',
     meta: {
       layuot: 'MainLayout',
       auth: true
     },
-    component: content
+    component: MainPage
   },
   {
     path: '/accounts',
-    name: 'content',
+    name: 'accounts',
     meta: {
       layuot: 'MainLayout',
       auth: true
     },
-    component: content
+    component: MainPage
   },
   {
     path: '/operations',
-    name: 'content',
+    name: 'operations',
     meta: {
       layuot: 'MainLayout',
       auth: true
     },
-    component: content
+    component: MainPage
   },
   {
-    path: '/settings',
-    name: 'content',
+    path: '/properties',
+    name: 'properties',
     meta: {
       layuot: 'MainLayout',
       auth: true
     },
-    component: content
+    component: MainPage
   },
   {
     path: '/statistic',
-    name: 'content',
+    name: 'statistic',
     meta: {
       layuot: 'MainLayout',
       auth: true
     },
-    component: content
+    component: MainPage
   }
 ]
 

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <section>
       <v-layout
         column
         wrap
@@ -54,7 +53,7 @@
               </v-flex>
               <v-flex xs12 md4>
                 <v-card
-                  to="/todos"
+                  to="/user"
                   class="elevation-0 transparent"
                 >
                   <v-card-text class="text-center">
@@ -72,13 +71,12 @@
           </v-container>
         </v-flex>
       </v-layout>
-    </section>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'content'
+  name: 'user'
 }
 </script>
 
