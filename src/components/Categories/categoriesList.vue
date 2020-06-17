@@ -1,10 +1,12 @@
 <template>
-  <h1>Targets</h1>
+  <div>
+    CategoriesList
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Targets'
+  name: 'categoriesList'
 }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="d-flex flex-grow-1">
+    <v-card flat class="d-flex flex-grow-1">
     <v-tabs-items v-model="CTabs" style="width: 100%">
       <v-tab-item
         :value="'targets'"

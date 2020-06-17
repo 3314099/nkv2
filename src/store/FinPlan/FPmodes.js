@@ -4,7 +4,11 @@ export default {
     pageMode: 'user',
     rightBarMode: 'calendar',
     visibility: true,
-    propertyTabMode: 'targets'
+    propertyTabMode: 'sectAndGrp',
+    itemMode: 'default',
+    editMode: '', // '', create, edit
+    editItem: {},
+    tableMode: 'sections'
   },
   mutations: {
     chgMainPageMode (state, mainPageMode) {
@@ -21,6 +25,18 @@ export default {
     },
     chgPropertyTabMode (state, propertyTabMode) {
       state.propertyTabMode = propertyTabMode
+    },
+    chgItemMode (state, itemMode) {
+      state.itemMode = itemMode
+    },
+    chgEditMode (state, editMode) {
+      state.editMode = editMode
+    },
+    chgEditItem (state, editItem) {
+      state.editItem = editItem
+    },
+    chgTableMode (state, tableMode) {
+      state.tableMode = tableMode
     }
   },
   actions: {
@@ -38,6 +54,18 @@ export default {
     },
     chgPropertyTabMode ({ commit }, propertyTabMode) {
       commit('chgPropertyTabMode', propertyTabMode)
+    },
+    chgEditMode ({ commit }, editMode) {
+      commit('chgEditMode', editMode)
+    },
+    chgItemMode ({ commit }, itemMode) {
+      commit('chgItemMode', itemMode)
+    },
+    chgEditItem ({ commit }, editItem) {
+      commit('chgEditItem', editItem)
+    },
+    chgTableMode ({ commit }, tableMode) {
+      commit('chgTableMode', tableMode)
     }
   },
   getters: {
@@ -55,6 +83,18 @@ export default {
     },
     propertyTabMode (state) {
       return state.propertyTabMode
+    },
+    itemMode (state) {
+      return state.itemMode
+    },
+    editMode (state) {
+      return state.editMode
+    },
+    editItem (state) {
+      return state.editItem
+    },
+    tableMode (state) {
+      return state.tableMode
     }
   }
 }

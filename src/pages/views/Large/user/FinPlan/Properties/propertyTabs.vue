@@ -2,7 +2,7 @@
   <div>
     <v-card color="basil">
       <v-card-title class="text-center justify-center py-1">
-        <h1 class="font-weight-bold display-3 basil--text">Настройки</h1>
+        <h1 class="font-weight-bold display-1 basil--text">Настройки</h1>
       </v-card-title>
       <v-tabs
         v-model="propertyTabMode"
@@ -11,10 +11,10 @@
         grow
       >
         <v-tab
-          :href="'#targets'"
-          @click="toChangePropertyTabMode('targets')"
+          :href="'#sectAndGrp'"
+          @click="toChangePropertyTabMode('sectAndGrp')"
         >
-          Цели
+          РАЗДЕЛЫ И ГРУППЫ
         </v-tab>
         <v-tab
           :href="'#accounts'"
@@ -43,9 +43,9 @@
       </v-tabs>
       <v-tabs-items v-model="propertyTabMode">
         <v-tab-item
-          :value="'targets'"
+          :value="'sectAndGrp'"
         >
-          <Targets/>
+          <SectAndGrp/>
         </v-tab-item>
         <v-tab-item
           :value="'accounts'"
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import Targets from '@/pages/views/Large/user/FinPlan/Targets/Targets'
+import SectAndGrp from '@/pages/views/Large/user/FinPlan/SectAndGrp/SectAndGrp'
 import Accounts from '@/pages/views/Large/user/FinPlan/Accounts/Accounts'
 import Filters from '@/pages/views/Large/user/Filters/Filters'
 import Categories from '@/pages/views/Large/user/FinPlan/Categories/Categories'
@@ -81,7 +81,7 @@ import Tags from '@/pages/views/Large/user/Tags/Tags'
 export default {
   name: 'propertyTabs',
   components: {
-    Targets, Accounts, Filters, Categories, Tags
+    SectAndGrp, Accounts, Filters, Categories, Tags
   },
   computed: {
     propertyTabMode: {
@@ -95,6 +95,25 @@ export default {
   methods: {
     toChangePropertyTabMode (propertyTabMode) {
       this.$store.dispatch('chgPropertyTabMode', propertyTabMode)
+      switch (propertyTabMode) {
+        case 'sectAndGrp':
+          this.$store.dispatch('chgTableMode', 'sections')
+          break
+        case 'accounts':
+          this.$store.dispatch('chgTableMode', 'zzzzzzzz')
+          break
+        case 'filters':
+          this.$store.dispatch('chgTableMode', 'zzzzzzzzz')
+          break
+        case 'categories':
+          this.$store.dispatch('chgTableMode', 'categories')
+          break
+        case 'tags':
+          this.$store.dispatch('chgTableMode', 'zzzzzzz')
+          break
+        default:
+          this.$store.dispatch('chgTableMode', 'zzzz')
+      }
     }
   }
 }

@@ -78,7 +78,7 @@
 import LeftBar from '@/pages/views/Large/user/LeftBar'
 import ContentArea from '@/pages/views/Large/user/ContentArea'
 import RightBar from '@/pages/views/Large/user/RightBar'
-
+import upload from '@/mixins/upload.js'
 export default {
   name: 'MainPage',
   components: {
@@ -86,10 +86,15 @@ export default {
     ContentArea,
     RightBar
   },
+  mixins: [upload],
   data: function () {
     return {
       routes: ''
     }
+  },
+  mounted () {
+    this.uploadSections()
+    this.uploadCatGroups()
   },
   created () {
   },

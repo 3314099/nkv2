@@ -1,6 +1,8 @@
 export default {
   state: {
-    copiedToClipboard: ''
+    copiedToClipboard: '',
+    loading: true,
+    searchField: ''
   },
   computed: {
     upperCase () {
@@ -10,16 +12,34 @@ export default {
   mutations: {
     changeToClipboard (state, val) {
       state.copiedToClipboard = val
+    },
+    chgLoading (state, val) {
+      state.loading = val
+    },
+    chgSearchField (state, val) {
+      state.searchField = val
     }
   },
   actions: {
     changeToClipboard ({ commit }, val) {
       commit('changeToClipboard', val)
+    },
+    chgLoading ({ commit }, val) {
+      commit('chgLoading', val)
+    },
+    chgSearchField ({ commit }, val) {
+      commit('chgSearchField', val)
     }
   },
   getters: {
     computedCopiedToClipboard (state) {
       return state.copiedToClipboard
+    },
+    loading (state) {
+      return state.loading
+    },
+    searchField (state) {
+      return state.searchField
     }
   },
   methods: {

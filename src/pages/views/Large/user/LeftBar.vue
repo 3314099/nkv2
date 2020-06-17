@@ -3,7 +3,7 @@
     <div>
       <leftPanelButtons />
       <v-window
-        v-model="LMWin"
+        v-model="LMWinMode"
         vertical
       >
         <v-window-item>
@@ -28,23 +28,23 @@ export default {
     leftPanelButtons
   },
   computed: {
-    LMWin () {
-      let LMWin = 0
+    LMWinMode () {
+      let LMWinMode = 0
       switch (this.$store.getters.leftBarMode) {
         case 'calendar':
-          LMWin = 0
+          LMWinMode = 0
           break
         case 'calc':
-          LMWin = 1
+          LMWinMode = 1
           break
         case 'currency':
-          LMWin = 2
+          LMWinMode = 2
           break
         default:
-          LMWin = 0
+          LMWinMode = 0
           break
       }
-      return LMWin
+      return LMWinMode
     }
   }
 }
