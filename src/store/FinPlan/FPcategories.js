@@ -1,34 +1,36 @@
 import firebase from 'firebase'
 export default {
   state: {
-    catGroups: []
+    FPcatGroups: [],
+    FPcategories: [],
+    stdFPCatGroup: {}
   },
   actions: {
-    async fetchCatGroups ({ commit, dispatch }) {
+    async fetchFPCatGroups ({ commit, dispatch }) {
       try {
         const uid = await dispatch('getUid')
-        const catGroups = (await firebase.database().ref(`/users/${uid}/catGroups`).once('value')).val() || {}
-        const cgps = Object.keys(catGroups).map(key => ({ ...catGroups[key], id: key }))
-        commit('updateCatGroups', cgps)
+        const FPcatGroups = (await firebase.database().ref(`/users/${uid}/FPcatGroups`).once('value')).val() || {}
+        const FPcgps = Object.keys(FPcatGroups).map(key => ({ ...FPcatGroups[key], id: key }))
+        commit('updateFPCatGroups', FPcgps)
       } catch (e) {
         commit('setError', e)
         throw e
       }
     },
-    async DBcreateCatGroup ({ commit, dispatch }, {
+    async DBcreateFPCatGroup ({ commit, dispatch }, {
       title,
       comment,
       rating
     }) {
       try {
         const uid = await dispatch('getUid')
-        const catGroup = await firebase.database().ref(`/users/${uid}/catGroups`).push({
+        const FPcatGroup = await firebase.database().ref(`/users/${uid}/FPcatGroups`).push({
           title,
           comment,
           rating
         })
         return {
-          id: catGroup.key,
+          id: FPcatGroup.key,
           title,
           comment,
           rating
@@ -38,7 +40,7 @@ export default {
         throw e
       }
     },
-    async DBeditCatGroup ({ commit, dispatch }, {
+    async DBeditFPCatGroup ({ commit, dispatch }, {
       id,
       title,
       comment,
@@ -46,7 +48,7 @@ export default {
     }) {
       try {
         const uid = await dispatch('getUid')
-        await firebase.database().ref(`/users/${uid}/catGroups`).child(id).update({
+        await firebase.database().ref(`/users/${uid}/FPcatGroups`).child(id).update({
           id,
           title,
           comment,
@@ -63,27 +65,131 @@ export default {
         throw e
       }
     },
-    async DBremoveCatGroup ({ commit, dispatch }, id) {
+    async DBremoveFPCatGroup ({ commit, dispatch }, id) {
       try {
         const uid = await dispatch('getUid')
-        await firebase.database().ref(`/users/${uid}/catGroups/${id}`).remove()
+        await firebase.database().ref(`/users/${uid}/FPcatGroups/${id}`).remove()
       } catch (e) {
         commit('setError', e)
         throw e
       }
     },
-    updateCatGroups ({ commit }, catGroups) {
-      commit('updateCatGroups', catGroups)
+    updateFPCatGroups ({ commit }, FPcatGroups) {
+      commit('updateFPCatGroups', FPcatGroups)
+    },
+    async fetchFPCategories ({ commit, dispatch }) {
+      try {
+        const uid = await dispatch('getUid')
+        const FPcategories = (await firebase.database().ref(`/users/${uid}/FPcategories`).once('value')).val() || {}
+        const FPctgs = Object.keys(FPcategories).map(key => ({ ...FPcategories[key], id: key }))
+        commit('updateFPCategories', FPctgs)
+      } catch (e) {
+        commit('setError', e)
+        throw e
+      }
+    },
+    async DBcreateFPCategory ({ commit, dispatch }, {
+      title,
+      FPcatGroupId,
+      comment,
+      expenses,
+      entrances,
+      visible
+    }) {
+      try {
+        const uid = await dispatch('getUid')
+        const FPcategory = await firebase.database().ref(`/users/${uid}/FPcategories`).push({
+          title,
+          FPcatGroupId,
+          comment,
+          expenses,
+          entrances,
+          visible
+        })
+        return {
+          id: FPcategory.key,
+          title,
+          FPcatGroupId,
+          comment,
+          expenses,
+          entrances,
+          visible
+        }
+      } catch (e) {
+        commit('setError', e)
+        throw e
+      }
+    },
+    async DBeditFPCategory ({ commit, dispatch }, {
+      id,
+      title,
+      FPcatGroupId,
+      comment,
+      expenses,
+      entrances,
+      visible
+    }) {
+      try {
+        const uid = await dispatch('getUid')
+        await firebase.database().ref(`/users/${uid}/FPcategories`).child(id).update({
+          id,
+          title,
+          FPcatGroupId,
+          comment,
+          expenses,
+          entrances,
+          visible
+        })
+        return {
+          id,
+          title,
+          FPcatGroupId,
+          comment,
+          expenses,
+          entrances,
+          visible
+        }
+      } catch (e) {
+        commit('setError', e)
+        throw e
+      }
+    },
+    async DBremoveFPCategory ({ commit, dispatch }, id) {
+      try {
+        const uid = await dispatch('getUid')
+        await firebase.database().ref(`/users/${uid}/FPcategories/${id}`).remove()
+      } catch (e) {
+        commit('setError', e)
+        throw e
+      }
+    },
+    updateFPCategories ({ commit }, FPcategories) {
+      commit('updateFPCategories', FPcategories)
+    },
+    chgStdFPCatGroup ({ commit }, stdFPCatGroup) {
+      commit('chgStdFPCatGroup', stdFPCatGroup)
     }
   },
   mutations: {
-    updateCatGroups (state, catGroups) {
-      state.catGroups = catGroups
+    updateFPCatGroups (state, FPcatGroups) {
+      state.FPcatGroups = FPcatGroups
+    },
+    updateFPCategories (state, FPcategories) {
+      state.FPcategories = FPcategories
+    },
+    chgStdFPCatGroup (state, stdFPCatGroup) {
+      state.stdFPCatGroup = stdFPCatGroup
     }
   },
   getters: {
-    catGroups (state) {
-      return state.catGroups
+    FPcatGroups (state) {
+      return state.FPcatGroups
+    },
+    FPcategories (state) {
+      return state.FPcategories
+    },
+    stdFPCatGroup (state) {
+      return state.stdFPCatGroup
     }
   }
 }

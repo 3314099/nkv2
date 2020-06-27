@@ -25,7 +25,7 @@
       <v-tab-item
         :value="'properties'"
       >
-        <propertyTabs/>
+        <FPpropertyTabs/>
       </v-tab-item>
       <v-tab-item
         :value="'user'"
@@ -39,12 +39,12 @@
 
 <script>
 import user from '@/pages/views/Large/user/user'
-import propertyTabs from '@/pages/views/Large/user/FinPlan/Properties/propertyTabs'
+import FPpropertyTabs from '@/pages/views/Large/user/FinPlan/Properties/FPpropertyTabs'
 export default {
   name: 'ContentArea',
   components: {
     user,
-    propertyTabs
+    FPpropertyTabs
   },
   computed: {
     CTabs () {

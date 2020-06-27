@@ -11,61 +11,61 @@
         grow
       >
         <v-tab
-          :href="'#sectAndGrp'"
-          @click="toChangePropertyTabMode('sectAndGrp')"
+          :href="'#FPsectAndGrp'"
+          @click="toChangePropertyTabMode('FPsectAndGrp')"
         >
           РАЗДЕЛЫ И ГРУППЫ
         </v-tab>
         <v-tab
-          :href="'#accounts'"
-          @click="toChangePropertyTabMode('accounts')"
+          :href="'#FPaccounts'"
+          @click="toChangePropertyTabMode('FPaccounts')"
         >
           Счета
         </v-tab>
         <v-tab
-          :href="'#filters'"
-          @click="toChangePropertyTabMode('filters')"
+          :href="'#FPfilters'"
+          @click="toChangePropertyTabMode('FPfilters')"
         >
           Фильтры
         </v-tab>
         <v-tab
-          :href="'#categories'"
-          @click="toChangePropertyTabMode('categories')"
+          :href="'#FPcategories'"
+          @click="toChangePropertyTabMode('FPcategories')"
         >
           Категории
         </v-tab>
         <v-tab
-          :href="'#tags'"
-          @click="toChangePropertyTabMode('tags')"
+          :href="'#FPtags'"
+          @click="toChangePropertyTabMode('FPtags')"
         >
           Теги
         </v-tab>
       </v-tabs>
       <v-tabs-items v-model="propertyTabMode">
         <v-tab-item
-          :value="'sectAndGrp'"
+          :value="'FPsectAndGrp'"
         >
-          <SectAndGrp/>
+          <FPSectAndGrp/>
         </v-tab-item>
         <v-tab-item
-          :value="'accounts'"
+          :value="'FPaccounts'"
         >
-          <Accounts/>
+          <FPAccounts/>
         </v-tab-item>
         <v-tab-item
-          :value="'filters'"
+          :value="'FPfilters'"
         >
-              <filters/>
+              <FPFilters/>
         </v-tab-item>
         <v-tab-item
-          :value="'categories'"
+          :value="'FPcategories'"
         >
-              <Categories/>
+              <FPCategories/>
         </v-tab-item>
         <v-tab-item
-          :value="'tags'"
+          :value="'FPtags'"
         >
-              <Tags/>
+              <FPTags/>
         </v-tab-item>
       </v-tabs-items>
     </v-card>
@@ -73,15 +73,19 @@
 </template>
 
 <script>
-import SectAndGrp from '@/pages/views/Large/user/FinPlan/SectAndGrp/SectAndGrp'
-import Accounts from '@/pages/views/Large/user/FinPlan/Accounts/Accounts'
-import Filters from '@/pages/views/Large/user/Filters/Filters'
-import Categories from '@/pages/views/Large/user/FinPlan/Categories/Categories'
-import Tags from '@/pages/views/Large/user/Tags/Tags'
+import FPSectAndGrp from '@/pages/views/Large/user/FinPlan/SectAndGrp/FPSectAndGrp'
+import FPAccounts from '@/pages/views/Large/user/FinPlan/Accounts/FPAccounts'
+import FPFilters from '@/pages/views/Large/user/FinPlan/Filters/FPFilters'
+import FPCategories from '@/pages/views/Large/user/FinPlan/Categories/FPCategories'
+import FPTags from '@/pages/views/Large/user/FinPlan/Tags/FPTags'
 export default {
   name: 'propertyTabs',
   components: {
-    SectAndGrp, Accounts, Filters, Categories, Tags
+    FPSectAndGrp,
+    FPAccounts,
+    FPFilters,
+    FPCategories,
+    FPTags
   },
   computed: {
     propertyTabMode: {
@@ -96,24 +100,27 @@ export default {
     toChangePropertyTabMode (propertyTabMode) {
       this.$store.dispatch('chgPropertyTabMode', propertyTabMode)
       switch (propertyTabMode) {
-        case 'sectAndGrp':
-          this.$store.dispatch('chgTableMode', 'sections')
+        case 'FPsectAndGrp':
+          this.$store.dispatch('chgTableMode', 'FPsections')
           break
-        case 'accounts':
+        case 'FPaccounts':
           this.$store.dispatch('chgTableMode', 'zzzzzzzz')
           break
-        case 'filters':
+        case 'FPfilters':
           this.$store.dispatch('chgTableMode', 'zzzzzzzzz')
           break
-        case 'categories':
-          this.$store.dispatch('chgTableMode', 'categories')
+        case 'FPcategories':
+          this.$store.dispatch('chgTableMode', 'FPcategories')
           break
-        case 'tags':
+        case 'FPtags':
           this.$store.dispatch('chgTableMode', 'zzzzzzz')
           break
         default:
           this.$store.dispatch('chgTableMode', 'zzzz')
       }
+      this.$store.dispatch('clearModes')
+      this.$store.dispatch('clearFields')
+      this.$store.dispatch('chgEditItem', {})
     }
   }
 }

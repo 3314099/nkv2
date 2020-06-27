@@ -16,24 +16,24 @@
         >
           <div>
           <v-chip
-            :disabled="disableTableMode === 'sections'"
+            :disabled="disableFPTableMode === 'FPsections'"
             class="mx-2"
             small
             color="teal"
-            :text-color= "sectionsAndGroupsTable === 'sections' ? 'white' : 'black'"
-            :outlined= "sectionsAndGroupsTable !== 'sections'"
-            @click="chgTableMode('sections')"
+            :text-color= "FPsectionsAndGroupsTable === 'FPsections' ? 'white' : 'black'"
+            :outlined= "FPsectionsAndGroupsTable !== 'FPsections'"
+            @click="chgFPTableMode('FPsections')"
           >
             <h3>Разделы</h3>
           </v-chip>
           <v-chip
-            :disabled="disableTableMode === 'groups'"
+            :disabled="disableFPTableMode === 'FPgroups'"
             class="mx-2"
             small
             color="teal"
-            :text-color= "sectionsAndGroupsTable === 'groups' ? 'white' : 'black'"
-            :outlined= "sectionsAndGroupsTable === 'groups' ? false : true"
-            @click="chgTableMode('groups')"
+            :text-color= "FPsectionsAndGroupsTable === 'FPgroups' ? 'white' : 'black'"
+            :outlined= "FPsectionsAndGroupsTable === 'FPgroups' ? false : true"
+            @click="chgFPTableMode('FPgroups')"
           >
             <h3>Группы</h3>
           </v-chip>
@@ -51,7 +51,7 @@
       vertical
     >
       <v-window-item>
-        <sectionsList/>
+        <FPsectionsList/>
       </v-window-item>
       <v-window-item>
         GroupsTable
@@ -61,34 +61,38 @@
 </template>
 
 <script>
-import sectionsList from '@/components/SectAndGrp/sectionsList'
+import FPsectionsList from '@/components/FinPlan/SectAndGrp/FPsectionsList'
 export default {
-  name: 'SectAndGrpTables',
+  name: 'FPSectAndGrpTables',
   components: {
-    sectionsList
+    FPsectionsList
   },
   computed: {
     loading () {
       return this.$store.getters.loading
     },
-    sectionsAndGroupsTable () {
-      return this.$store.getters.tableMode
+    FPsectionsAndGroupsTable () {
+      if (this.$store.getters.tableMode) {
+        return this.$store.getters.tableMode
+      } else {
+        return 'FPsections'
+      }
     },
-    disableTableMode () {
+    disableFPTableMode () {
       const itemMode = this.$store.getters.itemMode
       let disableTableMode = ''
       switch (itemMode) {
-        case 'sectionCreate':
-          disableTableMode = 'groups'
+        case 'FPsectionCreate':
+          disableTableMode = 'FPgroups'
           break
-        case 'sectionEdit':
-          disableTableMode = 'groups'
+        case 'FPsectionEdit':
+          disableTableMode = 'FPgroups'
           break
-        case 'groupCreate':
-          disableTableMode = 'sections'
+        case 'FPgroupCreate':
+          disableTableMode = 'FPsections'
           break
-        case 'groupEdit':
-          disableTableMode = 'sections'
+        case 'FPgroupEdit':
+          disableTableMode = 'FPsections'
           break
         default:
           disableTableMode = ''
@@ -98,10 +102,10 @@ export default {
     winMode () {
       let winMode = 0
       switch (this.sectionsAndGroupsTable) {
-        case 'sections':
+        case 'FPsections':
           winMode = 0
           break
-        case 'groups':
+        case 'FPgroups':
           winMode = 1
           break
         default:
@@ -111,8 +115,8 @@ export default {
     }
   },
   methods: {
-    chgTableMode (tableMode) {
-      this.$store.dispatch('chgTableMode', tableMode)
+    chgFPTableMode (tableMode) {
+      this.$store.dispatch('chgFPTableMode', tableMode)
     }
   }
 }

@@ -76,24 +76,6 @@
                 </span>
               </v-col>
               <v-spacer />
-              <v-col cols="1" class="ma-0 pa-0">
-                <v-switch
-                  hide-details
-                  class="ma-0 pa-0"
-                  v-model="section.expenses"
-                  @change="toChangeSwitch('expenses',item.expenses, item)"
-                  color="success"
-                ></v-switch>
-              </v-col>
-                <v-col cols="1" class="ma-0 pa-0">
-                <v-switch
-                  hide-details
-                  class="ma-0 pa-0"
-                  v-model="section.entrances"
-                  @change="toChangeSwitch('entrances',item.entrances, item)"
-                  color="primary"
-                ></v-switch>
-              </v-col>
               <v-btn
                 class="mr-2"
                 @click="editSection(section)"
@@ -117,10 +99,10 @@
 </template>
 
 <script>
-import sections from '@/mixins/sections.js'
+import FPsections from '@/mixins/FinPlan/FPsections.js'
 export default {
-  name: 'sectionsList',
-  mixins: [sections],
+  name: 'FPsectionsList',
+  mixins: [FPsections],
   data: () => ({
     opacity: 0.7,
     dragging: -1,
@@ -131,7 +113,7 @@ export default {
       return this.$store.getters.loading
     },
     sections () {
-      return this.MXsortedRuEnSections()
+      return this.MXsortedRuEnFPSections()
     },
     isDragging () {
       return this.dragging > -1
@@ -139,7 +121,7 @@ export default {
   },
   methods: {
     editSection (section) {
-      this.$store.dispatch('chgItemMode', 'sectionEdit')
+      this.$store.dispatch('chgItemMode', 'FPsectionEdit')
       this.$store.dispatch('chgEditItem', section)
       this.$store.dispatch('chgEditMode', 'edit')
     },
@@ -178,9 +160,9 @@ export default {
     },
     moveItem (from, to) {
       this.$store.dispatch('chgLoading', 'true')
-      const sections = this.MXsections()
+      const sections = this.MXFPsections()
       sections.splice(to, 0, sections.splice(from, 1)[0])
-      this.MXtoEditSectionSerial(this.UarrayFromObjectsArrayByField(sections, 'id'))
+      this.MXtoEditFPSectionSerial(this.UarrayFromObjectsArrayByField(sections, 'id'))
     }
   }
 }

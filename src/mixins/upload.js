@@ -1,12 +1,16 @@
 export default {
   methods: {
-    async uploadSections () {
-      await this.$store.dispatch('fetchSections')
-      await this.$store.dispatch('fetchSectionsSerial')
+    async MXuploadFPSections () {
+      await this.$store.dispatch('fetchFPSections')
+      await this.$store.dispatch('fetchFPSectionsSerial')
       this.$store.dispatch('chgLoading', 'false')
     },
-    async uploadCatGroups () {
-      await this.$store.dispatch('fetchCatGroups')
+    async MXuploadFPCatGroups () {
+      await this.$store.dispatch('fetchFPCatGroups')
+      this.$store.dispatch('chgLoading', 'false')
+    },
+    async MXuploadFPCategories () {
+      await this.$store.dispatch('fetchFPCategories')
       this.$store.dispatch('chgLoading', 'false')
     }
   }

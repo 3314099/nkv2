@@ -1,10 +1,12 @@
 <template>
-  <h1>Filters</h1>
+  <div>
+    FPTags
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Filters'
+  name: 'FPTags'
 }
 </script>
 

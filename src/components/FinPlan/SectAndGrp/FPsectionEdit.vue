@@ -8,8 +8,7 @@
           <div class="d-flex justify-space-between">
             <div>
               <v-text-field
-                v-model="titleField"
-                @input="chgSearchField()"
+                v-model="searchField"
                 class="pa-1"
                 style="min-width: 400px"
                 label="Наименование раздела"
@@ -48,43 +47,6 @@
             >
             </v-text-field>
           </div>
-          <v-col
-            cols="12"
-            class="d-flex justify-start pa-0 my-0"
-          >
-            <v-col
-              cols="4"
-              class="pa-0 my-0"
-            >
-              <h3>Типы операций:</h3>
-            </v-col>
-            <v-col
-              class="pa-0 my-0"
-              cols="4"
-            >
-              <v-switch
-                v-model="expenses"
-                @change="toChangeSwitch('expenses', expenses)"
-                class="pa-0 my-0"
-                label="Расходы"
-                color="success"
-              >
-              </v-switch>
-            </v-col>
-            <v-col
-              class="pa-0 my-0"
-              cols="4"
-            >
-              <v-switch
-                v-model="entrances"
-                @change="toChangeSwitch('entrances', entrances)"
-                class="pa-0 my-0"
-                label="Поступления"
-                color="primary"
-              >
-              </v-switch>
-            </v-col>
-          </v-col>
         </div>
         <div class="d-flex" >
           <div class="d-flex justify-space-around flex-column align-center ">
@@ -125,18 +87,16 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import sections from '@/mixins/sections.js'
+import FPsections from '@/mixins/FinPlan/FPsections.js'
 import colorPicker from '@/components/colorPicker'
 export default {
-  name: 'categoryEdit',
-  mixins: [validationMixin, sections],
+  name: 'FPsectionEdit',
+  mixins: [validationMixin, FPsections],
   components: {
     colorPicker
   },
   data () {
     return {
-      titleField: '',
-      commentField: '',
       expenses: true,
       entrances: true
     }
@@ -157,18 +117,38 @@ export default {
     }
   },
   computed: {
+    searchField: {
+      get: function () {
+        return this.$store.getters.searchField
+      },
+      set: function (v) {
+        let searchField = ''
+        v ? searchField = v : searchField = ''
+        this.$store.dispatch('chgSearchField', searchField)
+      }
+    },
+    commentField: {
+      get: function () {
+        return this.$store.getters.commentField
+      },
+      set: function (v) {
+        let commentField = ''
+        v ? commentField = v : commentField = ''
+        this.$store.dispatch('chgCommentField', commentField)
+      }
+    },
     colorsIgnore () {
       this.toChgByEditItem()
       return this.MXcolorsIgnoreArray()
     },
     valСhildTitleField () {
       let unique = true
-      const findUnique = this.MXsections()
+      const findUnique = this.MXFPsections()
         .find(item => item.title.toLowerCase() === this.childTitleField.toLowerCase())
       if (findUnique) { unique = false }
       if (this.getEditItem().title) {
         if (this.getEditItem() && this.childTitleField.toLowerCase() ===
-            this.getEditItem().title.toLowerCase()) {
+          this.getEditItem().title.toLowerCase()) {
           unique = true
         }
       }
@@ -188,8 +168,8 @@ export default {
       return valСhildCommentField
     },
     childTitleField () {
-      if (this.titleField) {
-        return this.titleField
+      if (this.searchField) {
+        return this.searchField
       } else {
         return ''
       }
@@ -222,25 +202,18 @@ export default {
     getEditItem () {
       return this.$store.getters.editItem
     },
-    chgSearchField () {
+    chgSearchField (v) {
       let searchField = ''
-      if (this.childTitleField) {
-        searchField = this.childTitleField
-      } else {
-        searchField = ''
-      }
+      v ? searchField = v : searchField = ''
       this.$store.dispatch('chgSearchField', searchField)
     },
     toChgByEditItem () {
       if (this.getEditItem().id) {
-        this.mode = 'edit'
-        this.titleField = this.getEditItem().title
-        this.commentField = this.getEditItem().comment
+        this.$store.dispatch('chgSearchField', this.getEditItem().title)
+        this.$store.dispatch('chgCommentField', this.getEditItem().comment)
         this.expenses = this.getEditItem().expenses
         this.entrances = this.getEditItem().entrances
         this.$store.dispatch('colorPicker', this.getEditItem().color)
-      } else {
-        this.titleField = this.$store.getters.searchField
       }
     },
     toChangeSwitch (type, val) {
@@ -265,7 +238,7 @@ export default {
           item.title = this.childTitleField
           item.comment = this.childCommentField
           item.color = this.$store.getters.colorPicker
-          this.MXtoCreateSection(item)
+          this.MXtoCreateFPSection(item)
           this.mode = ''
           this.titleField = ''
           this.commentField = ''
@@ -283,7 +256,7 @@ export default {
           item.title = this.childTitleField
           item.comment = this.childCommentField
           item.color = this.$store.getters.colorPicker
-          this.MXtoEdit(item)
+          this.MXtoEditFPSection(item)
           this.mode = ''
           this.titleField = ''
           this.commentField = ''
@@ -294,7 +267,7 @@ export default {
           break
         case 'remove':
           this.$store.dispatch('chgLoading', 'true')
-          this.MXtoRemove(this.getEditItem().id)
+          this.MXtoRemoveFPSection(this.getEditItem().id)
           this.mode = ''
           this.titleField = ''
           this.commentField = ''
@@ -303,7 +276,6 @@ export default {
           this.$v.$reset()
           break
         default: // cancel
-          this.mode = ''
           this.$store.dispatch('chgSearchField', '')
           this.$store.dispatch('chgEditMode', '')
           this.titleField = ''

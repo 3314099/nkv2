@@ -8,14 +8,14 @@
           <div class="d-flex justify-space-between">
             <div>
               <v-text-field
-                v-model="searchField"
+                v-model="titleField"
                 class="pa-1"
                 style="min-width: 400px"
-                label="Наименование раздела"
+                label="Наименование целевого раздела"
                 type: String
                 hint="Не менее 3-х и не более 15-ти символов"
-                :error-messages="childTitleFieldErrors"
-                @blur="$v.childTitleField.$touch()"
+                :error-messages="titleFieldErrors"
+                @blur="$v.titleField.$touch()"
                 dense
                 outlined
                 small
@@ -34,10 +34,10 @@
             <v-text-field
               v-model="commentField"
               hint="не более 100 символов"
-              :error-messages="childCommentFieldErrors"
-              @blur="$v.childCommentField.$touch()"
+              :error-messages="commentFieldErrors"
+              @blur="$v.commentField.$touch()"
               class="pa-1 pb-0"
-              label="Комментарий"
+              label="Комментарий  целевому разделу"
               dense
               rows="1"
               outlined
@@ -47,47 +47,10 @@
             >
             </v-text-field>
           </div>
-          <v-col
-            cols="12"
-            class="d-flex justify-start pa-0 my-0"
-          >
-            <v-col
-              cols="4"
-              class="pa-0 my-0"
-            >
-              <h3>Типы операций:</h3>
-            </v-col>
-            <v-col
-              class="pa-0 my-0"
-              cols="4"
-            >
-              <v-switch
-                v-model="expenses"
-                @change="toChangeSwitch('expenses', expenses)"
-                class="pa-0 my-0"
-                label="Расходы"
-                color="success"
-              >
-              </v-switch>
-            </v-col>
-            <v-col
-              class="pa-0 my-0"
-              cols="4"
-            >
-              <v-switch
-                v-model="entrances"
-                @change="toChangeSwitch('entrances', entrances)"
-                class="pa-0 my-0"
-                label="Поступления"
-                color="primary"
-              >
-              </v-switch>
-            </v-col>
-          </v-col>
         </div>
         <div class="d-flex" >
           <div class="d-flex justify-space-around flex-column align-center ">
-            <div v-if="getEditMode() === 'edit'">
+            <div>
               <v-btn
                 @click="button('remove')"
                 class="mx-2"
@@ -110,7 +73,7 @@
                 class="mx-2"
                 outlined
                 color="primary"
-                @click="button('save')"
+                @click="button('create')"
               >
                 Сохранить
               </v-btn>
@@ -124,20 +87,13 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import sections from '@/mixins/sections.js'
+import FPsections from '@/mixins/FinPlan/FPsections.js'
 import colorPicker from '@/components/colorPicker'
 export default {
-  name: 'sectionEdit',
-  mixins: [validationMixin, sections],
+  name: 'FPgroupEdit',
+  mixins: [validationMixin, FPsections],
   components: {
     colorPicker
-  },
-  data () {
-    return {
-      commentField: '',
-      expenses: true,
-      entrances: true
-    }
   },
   validations: {
     childTitleField: {
@@ -155,28 +111,18 @@ export default {
     }
   },
   computed: {
-    searchField: {
-      get: function () {
-        return this.$store.getters.searchField
-      },
-      set: function (v) {
-        let searchField = ''
-        v ? searchField = v : searchField = ''
-        this.$store.dispatch('chgSearchField', searchField)
-      }
-    },
     colorsIgnore () {
       this.toChgByEditItem()
       return this.MXcolorsIgnoreArray()
     },
     valСhildTitleField () {
       let unique = true
-      const findUnique = this.MXsections()
+      const findUnique = this.MXsectionTargets()
         .find(item => item.title.toLowerCase() === this.childTitleField.toLowerCase())
       if (findUnique) { unique = false }
       if (this.getEditItem().title) {
         if (this.getEditItem() && this.childTitleField.toLowerCase() ===
-          this.getEditItem().title.toLowerCase()) {
+            this.getEditItem().title.toLowerCase()) {
           unique = true
         }
       }
@@ -196,8 +142,8 @@ export default {
       return valСhildCommentField
     },
     childTitleField () {
-      if (this.searchField) {
-        return this.searchField
+      if (this.titleField) {
+        return this.titleField
       } else {
         return ''
       }
@@ -212,7 +158,7 @@ export default {
     childTitleFieldErrors () {
       const errors = []
       if (!this.$v.childTitleField.$dirty) return errors
-      !this.$v.childTitleField.length && errors.push('Не менее 3-х и не более 15-ти символов')
+      !this.$v.childTitleField.length && errors.push('Не менее 3-х и не более 30-ти символов')
       !this.$v.childTitleField.unique && errors.push('Наименование уже существует')
       return errors
     },
@@ -224,20 +170,13 @@ export default {
     }
   },
   methods: {
-    getEditMode () {
-      return this.$store.getters.editMode
-    },
     getEditItem () {
       return this.$store.getters.editItem
     },
-    chgSearchField (v) {
-      let searchField = ''
-      v ? searchField = v : searchField = ''
-      this.$store.dispatch('chgSearchField', searchField)
-    },
     toChgByEditItem () {
       if (this.getEditItem().id) {
-        this.$store.dispatch('chgSearchField', this.getEditItem().title)
+        this.mode = 'edit'
+        this.titleField = this.getEditItem().title
         this.commentField = this.getEditItem().comment
         this.expenses = this.getEditItem().expenses
         this.entrances = this.getEditItem().entrances
@@ -254,7 +193,7 @@ export default {
       }
     },
     button (mode) {
-      if (mode === 'save') { mode = this.getEditMode() }
+      if (this.getEditItem().id && mode === 'create') { mode = 'edit' }
       const item = {}
       switch (mode) {
         case 'create':
@@ -262,17 +201,21 @@ export default {
             this.$v.$touch()
             return
           }
-          this.$store.dispatch('chgLoading', 'true')
           item.title = this.childTitleField
           item.comment = this.childCommentField
           item.color = this.$store.getters.colorPicker
-          this.MXtoCreateSection(item)
+          item.sectionId = ''
+          item.type = 'section'
+          item.groupId = ''
+          item.expenses = this.expenses
+          item.entrances = this.entrances
+          this.MXtoCreateFPSection(item)
           this.mode = ''
           this.titleField = ''
           this.commentField = ''
+          this.expenses = true
+          this.entrances = true
           this.$store.dispatch('colorPicker', '')
-          this.$store.dispatch('chgSearchField', '')
-          this.$store.dispatch('chgEditMode', '')
           this.$v.$reset()
           break
         case 'edit':
@@ -284,33 +227,38 @@ export default {
           item.title = this.childTitleField
           item.comment = this.childCommentField
           item.color = this.$store.getters.colorPicker
-          this.MXtoEdit(item)
+          item.sectionId = ''
+          item.type = 'section'
+          item.groupId = ''
+          item.expenses = this.expenses
+          item.entrances = this.entrances
+          this.MXtoEditFPSection(item)
           this.mode = ''
           this.titleField = ''
           this.commentField = ''
+          this.expenses = true
+          this.entrances = true
           this.$store.dispatch('colorPicker', '')
-          this.$store.dispatch('chgSearchField', '')
-          this.$store.dispatch('chgEditMode', '')
           this.$v.$reset()
           break
         case 'remove':
-          this.$store.dispatch('chgLoading', 'true')
-          this.MXtoRemove(this.getEditItem().id)
+          this.MXtoRemoveFPSection(this.getEditItem().id)
           this.mode = ''
           this.titleField = ''
           this.commentField = ''
+          this.expenses = true
+          this.entrances = true
           this.$store.dispatch('colorPicker', '')
-          this.$store.dispatch('chgEditMode', '')
           this.$v.$reset()
           break
         default: // cancel
-          this.mode = ''
-          this.$store.dispatch('chgSearchField', '')
-          this.$store.dispatch('chgEditMode', '')
+          this.targetTable = 'targets'
+          this.editItem = {}
           this.titleField = ''
           this.commentField = ''
-          // this.$store.dispatch('chgEditItem', {})
-          // this.$store.dispatch('chgItemMode', 'default')
+          this.expenses = true
+          this.entrances = true
+          this.$store.dispatch('chgEditItem', {})
           this.$v.$reset()
       }
       this.$store.dispatch('chgItemMode', 'default')

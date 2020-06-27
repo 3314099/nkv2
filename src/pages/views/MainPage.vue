@@ -93,8 +93,9 @@ export default {
     }
   },
   mounted () {
-    this.uploadSections()
-    this.uploadCatGroups()
+    this.MXuploadFPSections()
+    this.MXuploadFPCatGroups()
+    this.MXuploadFPCategories()
   },
   created () {
   },

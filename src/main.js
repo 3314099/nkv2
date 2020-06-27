@@ -55,6 +55,13 @@ Vue.filter('countAccounts', (lmBtnId, accounts) => {
   }
   return checkedCount + '/' + count
 })
+Vue.filter('toUpperCase', (text) => {
+  return text.toString().toUpperCase()
+})
+Vue.filter('capitalize', (text) => {
+  text.toLowerCase()
+  return text[0].toString().toUpperCase() + text.slice(1)
+})
 
 firebase.initializeApp({
   apiKey: 'AIzaSyBUlLp4YnIlvM5v61SqveOAnLPUJdkwnJk',

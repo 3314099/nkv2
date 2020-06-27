@@ -1,10 +1,12 @@
 <template>
-  <h1>Accounts</h1>
+  <div>
+    FPAccounts
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Accounts'
+  name: 'FPAccounts'
 }
 </script>
 

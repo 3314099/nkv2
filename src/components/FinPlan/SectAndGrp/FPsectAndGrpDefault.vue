@@ -27,9 +27,9 @@
                 class="mx-1"
                 outlined
                 color="primary"
-                @click= "chgItemMode('catGroupCreate')"
+                @click= "chgItemMode('FPsectionCreate')"
               >
-                Создать группу категорий
+                Создать раздел
               </v-btn>
             </div>
             <div
@@ -39,9 +39,9 @@
                 class="mx-1"
                 outlined
                 color="primary"
-                @click= "chgItemMode('categoryCreate')"
+                @click= "chgItemMode('FPgroupCreate')"
               >
-                Создать категорию
+                Создать группу
               </v-btn>
             </div>
           </div>
@@ -53,7 +53,7 @@
 
 <script>
 export default {
-  name: 'categotiesDefault',
+  name: 'sectAndGrpDefault',
   data: function () {
     return {
       titleField: ''

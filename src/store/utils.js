@@ -2,7 +2,11 @@ export default {
   state: {
     copiedToClipboard: '',
     loading: true,
-    searchField: ''
+    editItem: {},
+    searchField: '',
+    LBsearchField: '',
+    commentField: '',
+    rating: 1
   },
   computed: {
     upperCase () {
@@ -16,8 +20,20 @@ export default {
     chgLoading (state, val) {
       state.loading = val
     },
-    chgSearchField (state, val) {
-      state.searchField = val
+    chgEditItem (state, editItem) {
+      state.editItem = editItem
+    },
+    chgSearchField (state, searchField) {
+      state.searchField = searchField
+    },
+    chgLBsearchField (state, LBsearchField) {
+      state.LBsearchField = LBsearchField
+    },
+    chgCommentField (state, commentField) {
+      state.commentField = commentField
+    },
+    chgRating (state, rating) {
+      state.rating = rating
     }
   },
   actions: {
@@ -27,8 +43,25 @@ export default {
     chgLoading ({ commit }, val) {
       commit('chgLoading', val)
     },
+    clearFields ({ commit }) {
+      commit('chgSearchField', '')
+      commit('chgCommentField', '')
+      commit('chgRating', 9)
+    },
+    chgEditItem ({ commit }, editItem) {
+      commit('chgEditItem', editItem)
+    },
     chgSearchField ({ commit }, val) {
       commit('chgSearchField', val)
+    },
+    chgLBsearchField ({ commit }, LBsearchField) {
+      commit('chgLBsearchField', LBsearchField)
+    },
+    chgCommentField ({ commit }, commentField) {
+      commit('chgCommentField', commentField)
+    },
+    chgRating ({ commit }, rating) {
+      commit('chgRating', rating)
     }
   },
   getters: {
@@ -38,8 +71,20 @@ export default {
     loading (state) {
       return state.loading
     },
+    editItem (state) {
+      return state.editItem
+    },
     searchField (state) {
       return state.searchField
+    },
+    LBsearchField (state) {
+      return state.LBsearchField
+    },
+    commentField (state) {
+      return state.commentField
+    },
+    rating (state) {
+      return state.rating
     }
   },
   methods: {

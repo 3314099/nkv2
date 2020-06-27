@@ -3,8 +3,17 @@ export default {
     UfilterByType (array, field, val) { // создает новый массив объектов с учетом свойства объекта и заначения
       return [...array].filter(o => o[field] === val)
     },
+    sortButton () {
+      return this.$store.getters.sortButton
+    },
+    LBSortButton () {
+      return this.$store.getters.LBsortButton
+    },
     UsearchField () {
       return this.$store.getters.searchField
+    },
+    ULBsearchField () {
+      return this.$store.getters.LBsearchField
     },
     UarrayFromObjectsArrayByField (array, field) { // создает массив из свойства объектов
       if (array.length) {

@@ -4,11 +4,10 @@ export default {
     pageMode: 'user',
     rightBarMode: 'calendar',
     visibility: true,
-    propertyTabMode: 'sectAndGrp',
+    propertyTabMode: 'FPsectAndGrp',
     itemMode: 'default',
     editMode: '', // '', create, edit
-    editItem: {},
-    tableMode: 'sections'
+    tableMode: ''
   },
   mutations: {
     chgMainPageMode (state, mainPageMode) {
@@ -32,14 +31,17 @@ export default {
     chgEditMode (state, editMode) {
       state.editMode = editMode
     },
-    chgEditItem (state, editItem) {
-      state.editItem = editItem
-    },
     chgTableMode (state, tableMode) {
       state.tableMode = tableMode
     }
   },
   actions: {
+    clearModes ({ commit }) {
+      commit('chgSortButton', 'alphabet')
+      commit('chgItemMode', 'default')
+      commit('chgEditMode', '')
+      commit('chgTableMode', '')
+    },
     chgMainPageMode ({ commit }, mainPageMode) {
       commit('chgMainPageMode', mainPageMode)
     },
@@ -60,9 +62,6 @@ export default {
     },
     chgItemMode ({ commit }, itemMode) {
       commit('chgItemMode', itemMode)
-    },
-    chgEditItem ({ commit }, editItem) {
-      commit('chgEditItem', editItem)
     },
     chgTableMode ({ commit }, tableMode) {
       commit('chgTableMode', tableMode)
@@ -89,9 +88,6 @@ export default {
     },
     editMode (state) {
       return state.editMode
-    },
-    editItem (state) {
-      return state.editItem
     },
     tableMode (state) {
       return state.tableMode

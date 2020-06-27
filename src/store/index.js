@@ -4,6 +4,7 @@ import auth from '@/store/auth.js'
 import FPmodes from '@/store/FinPlan/FPmodes.js'
 import utils from '@/store/utils.js'
 import colorPicker from '@/store/colorPicker.js'
+import modes from '@/store/modes.js'
 import snackBar from '@/store/snackBar.js'
 import targets from '@/store/targets.js'
 import FPsections from '@/store/FinPlan/FPsections.js'
@@ -17,6 +18,7 @@ export default new Vuex.Store({
     FPmodes,
     utils,
     colorPicker,
+    modes,
     snackBar,
     targets,
     FPsections,

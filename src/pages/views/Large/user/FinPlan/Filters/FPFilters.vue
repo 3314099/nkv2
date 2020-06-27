@@ -1,12 +1,12 @@
 <template>
   <div>
-    CategoriesList
+    FPFilters
   </div>
 </template>
 
 <script>
 export default {
-  name: 'categoriesList'
+  name: 'FPFilters'
 }
 </script>
 

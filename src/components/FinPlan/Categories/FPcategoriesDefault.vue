@@ -10,7 +10,7 @@
             style="min-width: 280px"
             label="Строка поиска"
             type: String
-            v-model="searchField"
+            v-model="titleField"
             dense
             outlined
             small
@@ -27,21 +27,22 @@
                 class="mx-1"
                 outlined
                 color="primary"
-                @click= "chgItemMode('sectionCreate')"
+                @click= "chgItemMode('FPcatGroupCreate')"
               >
-                Создать раздел
+                Создать группу категорий
               </v-btn>
             </div>
             <div
               class="pa-1"
             >
               <v-btn
+                :disabled="FPcatGroups"
                 class="mx-1"
                 outlined
                 color="primary"
-                @click= "chgItemMode('groupCreate')"
+                @click= "chgItemMode('FPcategoryCreate')"
               >
-                Создать группу
+                Создать категорию
               </v-btn>
             </div>
           </div>
@@ -52,15 +53,12 @@
 </template>
 
 <script>
+import FPcategories from '@/mixins/FinPlan/FPcategories.js'
 export default {
-  name: 'sectAndGrpDefault',
-  data: function () {
-    return {
-      titleField: ''
-    }
-  },
+  name: 'FPcategoriesDefault',
+  mixins: [FPcategories],
   computed: {
-    searchField: {
+    titleField: {
       get: function () {
         return this.$store.getters.searchField
       },
@@ -70,17 +68,16 @@ export default {
         this.$store.dispatch('chgSearchField', searchField)
       }
     },
-    childTitleField () {
-      if (this.titleField) {
-        return this.titleField
+    FPcatGroups () {
+      if (this.MXFPcatGroups().length) {
+        return false
       } else {
-        return ''
+        return true
       }
     }
   },
   methods: {
     chgItemMode (itemMode) {
-      this.titleField = ''
       this.$store.dispatch('chgItemMode', itemMode)
       this.$store.dispatch('chgEditMode', 'create')
     }

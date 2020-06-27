@@ -1,39 +1,39 @@
 import firebase from 'firebase'
 export default {
   state: {
-    sections: [],
-    sectionsSerial: []
+    FPsections: [],
+    FPsectionsSerial: []
   },
   actions: {
-    async fetchSectionsSerial ({ commit, dispatch }) {
+    async fetchFPSectionsSerial ({ commit, dispatch }) {
       try {
         const uid = await dispatch('getUid')
-        const sectionsSerial = (await firebase.database().ref(`/users/${uid}/sectionsSerial`).once('value')).val() || {}
-        commit('updateSectionsSerial', sectionsSerial)
+        const FPsectionsSerial = (await firebase.database().ref(`/users/${uid}/FPsectionsSerial`).once('value')).val() || {}
+        commit('updateFPSectionsSerial', FPsectionsSerial)
       } catch (e) {
         commit('setError', e)
         throw e
       }
     },
-    async fetchSections ({ commit, dispatch }) {
+    async fetchFPSections ({ commit, dispatch }) {
       try {
         const uid = await dispatch('getUid')
-        const sections = (await firebase.database().ref(`/users/${uid}/sections`).once('value')).val() || {}
-        const sects = Object.keys(sections).map(key => ({ ...sections[key], id: key }))
-        commit('updateSections', sects)
+        const FPsections = (await firebase.database().ref(`/users/${uid}/FPsections`).once('value')).val() || {}
+        const sects = Object.keys(FPsections).map(key => ({ ...FPsections[key], id: key }))
+        commit('updateFPSections', sects)
       } catch (e) {
         commit('setError', e)
         throw e
       }
     },
-    async DBcreateSection ({ commit, dispatch }, {
+    async DBcreateFPSection ({ commit, dispatch }, {
       title,
       comment,
       color
     }) {
       try {
         const uid = await dispatch('getUid')
-        const section = await firebase.database().ref(`/users/${uid}/sections`).push({
+        const section = await firebase.database().ref(`/users/${uid}/FPsections`).push({
           title,
           comment,
           color
@@ -49,21 +49,21 @@ export default {
         throw e
       }
     },
-    async DBeditSectionsSerial ({ commit, dispatch }, {
-      sectionsSerial
+    async DBeditFPSectionsSerial ({ commit, dispatch }, {
+      FPsectionsSerial
     }) {
       try {
         const uid = await dispatch('getUid')
         await firebase.database().ref(`/users/${uid}`).update({
-          sectionsSerial
+          FPsectionsSerial
         })
-        commit('updateSectionsSerial', sectionsSerial)
+        commit('updateFPSectionsSerial', FPsectionsSerial)
       } catch (e) {
         commit('setError', e)
         throw e
       }
     },
-    async DBeditSection ({ commit, dispatch }, {
+    async DBeditFPSection ({ commit, dispatch }, {
       id,
       title,
       comment,
@@ -71,7 +71,7 @@ export default {
     }) {
       try {
         const uid = await dispatch('getUid')
-        await firebase.database().ref(`/users/${uid}/sections`).child(id).update({
+        await firebase.database().ref(`/users/${uid}/FPsections`).child(id).update({
           id,
           title,
           comment,
@@ -88,36 +88,36 @@ export default {
         throw e
       }
     },
-    async DBremoveSection ({ commit, dispatch }, id) {
+    async DBremoveFPSection ({ commit, dispatch }, id) {
       try {
         const uid = await dispatch('getUid')
-        await firebase.database().ref(`/users/${uid}/sections/${id}`).remove()
+        await firebase.database().ref(`/users/${uid}/FPsections/${id}`).remove()
       } catch (e) {
         commit('setError', e)
         throw e
       }
     },
-    updateSections ({ commit }, sections) {
-      commit('updateSections', sections)
+    updateFPSections ({ commit }, FPsections) {
+      commit('updateFPSections', FPsections)
     },
-    updateSectionsSerial ({ commit }, sectionsSerial) {
-      commit('updateSections', sectionsSerial)
+    updateFPSectionsSerial ({ commit }, FPsectionsSerial) {
+      commit('updateFPSectionsSerial', FPsectionsSerial)
     }
   },
   mutations: {
-    updateSections (state, sections) {
-      state.sections = sections
+    updateFPSections (state, FPsections) {
+      state.FPsections = FPsections
     },
-    updateSectionsSerial (state, sectionsSerial) {
-      state.sectionsSerial = sectionsSerial
+    updateFPSectionsSerial (state, FPsectionsSerial) {
+      state.FPsectionsSerial = FPsectionsSerial
     }
   },
   getters: {
-    sections (state) {
-      return state.sections
+    FPsections (state) {
+      return state.FPsections
     },
-    sectionsSerial (state) {
-      return state.sectionsSerial
+    FPsectionsSerial (state) {
+      return state.FPsectionsSerial
     }
   }
 }

@@ -1,8 +1,5 @@
 <template>
   <div>
-    {{getEditMode()}}
-    {{getEditItem()}}
-    {{searchField}}
     <v-card
       flat
     >
@@ -11,14 +8,14 @@
           <div class="d-flex justify-space-between">
             <div>
               <v-text-field
-                v-model="searchField"
+                v-model="titleField"
                 class="pa-1"
                 style="min-width: 400px"
                 label="Наименование группы категорий"
                 type: String
                 hint="Не менее 3-х и не более 15-ти символов"
-                :error-messages="childTitleFieldErrors"
-                @blur="$v.childTitleField.$touch()"
+                :error-messages="titleFieldErrors"
+                @blur="$v.titleField.$touch()"
                 dense
                 outlined
                 small
@@ -43,8 +40,8 @@
             <v-text-field
               v-model="commentField"
               hint="не более 100 символов"
-              :error-messages="childCommentFieldErrors"
-              @blur="$v.childCommentField.$touch()"
+              :error-messages="commentFieldErrors"
+              @blur="$v.commentField.$touch()"
               class="pa-1 pb-0"
               label="Комментарий"
               dense
@@ -97,30 +94,24 @@
 <script>
 import { eventEmitter } from '@/main'
 import { validationMixin } from 'vuelidate'
-import categories from '@/mixins/categories.js'
+import FPcategories from '@/mixins/FinPlan/FPcategories.js'
 export default {
   name: 'catGroupEdit',
-  mixins: [validationMixin, categories],
+  mixins: [validationMixin, FPcategories],
   components: {
   },
-  data () {
-    return {
-      commentField: '',
-      rating: 9
-    }
-  },
   validations: {
-    childTitleField: {
+    titleField: {
       unique: function () {
-        return this.valСhildTitleField.unique
+        return this.valTitleField.unique
       },
       length: function () {
-        return this.valСhildTitleField.length
+        return this.valTitleField.length
       }
     },
-    childCommentField: {
+    commentField: {
       length: function () {
-        return this.valСhildComentField.length
+        return this.valCommentField.length
       }
     }
   },
@@ -131,7 +122,7 @@ export default {
     })
   },
   computed: {
-    searchField: {
+    titleField: {
       get: function () {
         return this.$store.getters.searchField
       },
@@ -141,65 +132,65 @@ export default {
         this.$store.dispatch('chgSearchField', searchField)
       }
     },
-    valСhildTitleField () {
+    commentField: {
+      get: function () {
+        return this.$store.getters.commentField
+      },
+      set: function (v) {
+        let commentField = ''
+        v ? commentField = v : commentField = ''
+        this.$store.dispatch('chgCommentField', commentField)
+      }
+    },
+    rating: {
+      get: function () {
+        return this.$store.getters.rating
+      },
+      set: function (rating) {
+        this.$store.dispatch('chgRating', rating)
+      }
+    },
+    valTitleField () {
       let unique = true
-      const findUnique = this.MXcatGroups()
-        .find(item => item.title.toLowerCase() === this.childTitleField.toLowerCase())
+      const findUnique = this.MXFPcatGroups()
+        .find(item => item.title.toLowerCase() === this.titleField.toLowerCase())
       if (findUnique) { unique = false }
       if (this.getEditItem().title) {
-        if (this.getEditItem() && this.childTitleField.toLowerCase() ===
+        if (this.getEditItem() && this.titleField.toLowerCase() ===
             this.getEditItem().title.toLowerCase()) {
           unique = true
         }
       }
       let length = true
-      this.childTitleField.length > 2 && this.childTitleField.length < 31
+      this.titleField.length > 2 && this.titleField.length < 31
         ? length = true : length = false
       return {
         length: length,
         unique: unique
       }
     },
-    valСhildComentField () {
-      const valСhildCommentField = {}
+    valCommentField () {
+      const valCommentField = {}
       let length = true
-      this.childCommentField.length < 100 ? length = true : length = false
-      valСhildCommentField.length = length
-      return valСhildCommentField
+      this.commentField.length < 100 ? length = true : length = false
+      valCommentField.length = length
+      return valCommentField
     },
-    childTitleField () {
-      if (this.searchField) {
-        return this.searchField
-      } else {
-        return ''
-      }
-    },
-    childCommentField () {
-      if (this.commentField) {
-        return this.commentField
-      } else {
-        return ''
-      }
-    },
-    childTitleFieldErrors () {
+    titleFieldErrors () {
       const errors = []
-      if (!this.$v.childTitleField.$dirty) return errors
-      !this.$v.childTitleField.length && errors.push('Не менее 3-х и не более 15-ти символов')
-      !this.$v.childTitleField.unique && errors.push('Наименование уже существует')
+      if (!this.$v.titleField.$dirty) return errors
+      !this.$v.titleField.length && errors.push('Не менее 3-х и не более 15-ти символов')
+      !this.$v.titleField.unique && errors.push('Наименование уже существует')
       return errors
     },
-    childCommentFieldErrors () {
+    commentFieldErrors () {
       const errors = []
-      if (!this.$v.childCommentField.$dirty) return errors
-      !this.$v.childCommentField.length && errors.push('Не более 100 символов')
+      if (!this.$v.commentField.$dirty) return errors
+      !this.$v.commentField.length && errors.push('Не более 100 символов')
       return errors
     }
   },
   methods: {
-    upload () {
-      this.toChgByEditItem()
-      return true
-    },
     getEditMode () {
       return this.$store.getters.editMode
     },
@@ -209,8 +200,8 @@ export default {
     toChgByEditItem () {
       if (this.getEditItem().id) {
         this.$store.dispatch('chgSearchField', this.getEditItem().title)
-        this.commentField = this.getEditItem().comment
-        this.rating = this.getEditItem().rating
+        this.$store.dispatch('chgCommentField', this.getEditItem().comment)
+        this.$store.dispatch('chgRating', this.getEditItem().rating)
       }
     },
     button (mode) {
@@ -223,10 +214,10 @@ export default {
             return
           }
           this.$store.dispatch('chgLoading', 'true')
-          item.title = this.childTitleField
-          item.comment = this.childCommentField
+          item.title = this.titleField
+          item.comment = this.commentField
           item.rating = this.rating
-          this.MXtoCreateCatGroup(item)
+          this.MXtoCreateFPCatGroup(item)
           break
         case 'edit':
           if (this.$v.$invalid) {
@@ -234,25 +225,26 @@ export default {
             return
           }
           item.id = this.getEditItem().id
-          item.title = this.searchField
-          item.comment = this.childCommentField
+          item.title = this.titleField
+          item.comment = this.commentField
           item.rating = this.rating
-          this.MXtoEditCatGroup(item)
+          this.MXtoEditFPCatGroup(item)
           break
         case 'remove':
           this.$store.dispatch('chgLoading', 'true')
-          this.MXtoRemoveCatGroup(this.getEditItem().id)
+          this.MXtoRemoveFPCatGroup(this.getEditItem().id)
           break
         default: // cancel
           break
       }
-      this.$store.dispatch('chgItemMode', 'default')
+      this.$v.$reset()
+      this.$store.dispatch('chgLoading', 'false')
       this.$store.dispatch('chgSearchField', '')
+      this.$store.dispatch('chgCommentField', '')
+      this.$store.dispatch('chgRating', 1)
+      this.$store.dispatch('chgItemMode', 'default')
       this.$store.dispatch('chgEditMode', '')
       this.$store.dispatch('chgEditItem', {})
-      this.commentField = ''
-      this.rating = 1
-      this.$v.$reset()
     }
   }
 }
