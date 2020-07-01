@@ -1,17 +1,17 @@
 <template>
-<v-navigation-drawer app
-
+<v-navigation-drawer
+        app
         v-model="drawer"
         :color="color"
         :expand-on-hover="expandOnHover"
         :mini-variant="miniVariant"
+        permanent
         :right="right"
         :src="bg"
         floating
         clipped
         disable-resize-watcher
         dark
-        fixed
       >
         <v-list
           dense
@@ -22,7 +22,11 @@
             <v-list-item-avatar>
               <img src="https://randomuser.me/api/portraits/men/81.jpg">
             </v-list-item-avatar>
-
+            <v-btn
+              icon
+            >
+              <v-icon>mdi-chevron-left</v-icon>
+            </v-btn>
             <v-list-item-content>
               <v-list-item-title>Application</v-list-item-title>
               <v-list-item-subtitle>Subtext</v-list-item-subtitle>
@@ -71,7 +75,7 @@ export default {
       ],
       right: false,
       miniVariant: true,
-      expandOnHover: true,
+      expandOnHover: false,
       background: false,
       clipped: true
     }

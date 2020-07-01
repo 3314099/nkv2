@@ -3,23 +3,34 @@ export default {
   mixins: [utils],
   methods: {
     MXFPsectionsSerial () {
-      const MXFPsectionsSerial = this.$store.getters.FPsectionsSerial
-      if (MXFPsectionsSerial) {
-        return MXFPsectionsSerial
-      } else {
-        return []
-      }
+      return this.$store.getters.FPsectionsSerial || []
     },
     MXFPsections () {
-      const sections = this.$store.getters.FPsections
-      if (sections) {
-        return this.UsortFromObjectsArrayByArray(sections, this.MXFPsectionsSerial(), 'id')
-      } else {
-        return []
-      }
+      return this.$store.getters.FPsections || []
+    },
+    MXFPsectionsSortedBysectionsSerial () {
+      return this.MXFPsections() ? this.UsortFromObjectsArrayByArray(
+        this.MXFPsections(), this.MXFPsectionsSerial(), 'id'
+      ) : []
+    },
+    MXFPsectionsSortedByVisibleButton () {
+      return this.UsortByVisibleButton(this.MXFPsectionsSortedBysectionsSerial())
     },
     MXsortedRuEnFPSections () {
-      return this.UsortRuEnArray(this.MXFPsections(), this.UsearchField())
+      return this.UsortRuEnArray(this.MXFPsectionsSortedByVisibleButton(), this.UsearchField())
+    },
+    MXFPsecGroups () {
+      return this.$store.getters.FPsecGroups || []
+    },
+    MXFPSecGroupsSortedByVisibleButton () {
+      return this.UsortByVisibleButton(this.MXFPsecGroups())
+    },
+    MXFPSecGroupsSortedBySortButton () {
+      return this.MXFPSecGroupsSortedByVisibleButton() ? this.UsortBySortButton(
+        this.MXFPSecGroupsSortedByVisibleButton()) : []
+    },
+    MXsortedRuEnFPsecGroups () {
+      return this.UsortRuEnArray(this.MXFPSecGroupsSortedBySortButton(), this.UsearchField())
     },
     MXcolorsIgnoreArray () {
       return this.UarrayFromObjectsArrayByField(this.MXFPsections(), 'color')
@@ -29,12 +40,31 @@ export default {
         const createdItem = await this.$store.dispatch('DBcreateFPSection', {
           title: item.title,
           comment: item.comment,
-          color: item.color
+          color: item.color,
+          visible: item.visible
         })
         this.MXcreatedFPSection(createdItem)
       } catch (e) {
         // console.log('error')
       }
+    },
+    async MXtoCreateFPsecGroup (item) {
+      try {
+        const createdItem = await this.$store.dispatch('DBcreateFPsecGroup', {
+          title: item.title,
+          comment: item.comment,
+          rating: item.rating,
+          visible: item.visible
+        })
+        this.MXcreatedFPsecGroup(createdItem)
+      } catch (e) {
+        // console.log('error')
+      }
+    },
+    MXcreatedFPsecGroup (item) {
+      const FPsecGroups = this.MXFPsecGroups().concat(item)
+      this.$store.dispatch('updateFPsecGroups', FPsecGroups)
+      this.$store.dispatch('chgLoading', 'false')
     },
     async MXtoEditFPSectionSerial (FPsectionsSerial) {
       try {
@@ -44,6 +74,25 @@ export default {
       } catch (e) {
         // console.log('error')
       }
+    },
+    async MXtoEditFPsecGroup (item) {
+      try {
+        const updatedSecGroup = await this.$store.dispatch('DBeditFPsecGroup', {
+          id: item.id,
+          title: item.title,
+          comment: item.comment,
+          rating: item.rating,
+          visible: item.visible
+        })
+        this.MXupdatedFPsecGroup(updatedSecGroup)
+      } catch (e) {
+        // console.log('error')
+      }
+    },
+    MXupdatedFPsecGroup (updatedSecGroup) {
+      const FPsecGroups = this.MXFPsecGroups().map(FPsecGroup => FPsecGroup.id ===
+      updatedSecGroup.id ? updatedSecGroup : FPsecGroup)
+      this.$store.dispatch('updateFPsecGroups', FPsecGroups)
     },
     MXcreatedFPSection (item) {
       const FPsections = this.MXFPsections().concat(item)
@@ -57,7 +106,8 @@ export default {
           id: item.id,
           title: item.title,
           comment: item.comment,
-          color: item.color
+          color: item.color,
+          visible: item.visible
         })
         this.MXupdatedFPSection(updatedSection)
       } catch (e) {
@@ -65,7 +115,7 @@ export default {
       }
     },
     MXupdatedFPSection (updatedSection) {
-      const sections = this.MXFPsections().map(section => section.id ===
+      const sections = this.MXFPsectionsSortedBysectionsSerial().map(section => section.id ===
       updatedSection.id ? updatedSection : section)
       this.$store.dispatch('updateFPSections', sections)
       this.MXtoEditFPSectionSerial(this.UarrayFromObjectsArrayByField(sections, 'id'))
@@ -76,6 +126,15 @@ export default {
         const sections = this.MXFPsections().filter(section => section.id !== id)
         this.$store.dispatch('updateFPSections', sections)
         this.MXtoEditFPSectionSerial(this.UarrayFromObjectsArrayByField(sections, 'id'))
+      } catch (e) {
+        // console.log('error')
+      }
+    },
+    async MXtoRemoveFPsecGroup (id) {
+      try {
+        await this.$store.dispatch('DBremoveFPsecGroup', id)
+        const FPsecGroups = this.MXFPsecGroups().filter(FPsecGroups => FPsecGroups.id !== id)
+        this.$store.dispatch('updateFPsecGroups', FPsecGroups)
       } catch (e) {
         // console.log('error')
       }

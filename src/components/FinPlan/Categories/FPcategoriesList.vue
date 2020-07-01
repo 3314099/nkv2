@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div v-if="!!loading && !FPcategories.length" class="text-center">
+    <div v-if="!!loading && !FPcategoriesLength" class="text-center">
       <h1 class="font-weight-bold display-1 teal--text ">Список пуст</h1>
     </div>
-    <div v-if="FPcategories.length">
+    <div v-else>
       <ul class="pl-0 pt-0 mt-1">
         <v-container
           id="scroll-target"
@@ -12,24 +12,42 @@
         >
           <li
             class=""
-            v-for="(FPcat, i) in FPcategories"
+            v-for="(FPcat, i) in this.FPcategoriesList()"
             :key="i"
           >
             <v-card
               class="my-1"
               outlined
+              :color="!FPcat.visible ? 'grey lighten-4' : ''"
             >
               <v-card-actions class="ma-0 pa-0" >
+                <div
+                  v-if="!FPcat.parentVisible"
+                  class="ml-2"
+                >
+                <v-tooltip left>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-icon
+                      class="ml-2"
+                      v-bind="attrs"
+                      v-on="on"
+                    >mdi-table-eye-off</v-icon>
+                  </template>
+                  <span>
+                    <div>Группа категорий скрыта</div>
+                  </span>
+                </v-tooltip>
+                </div>
                 <v-btn
                   v-if="FPcat.visible"
-                  class="mr-2"
+                  class="ml-2"
                   @click="chgFPCategoryVisible(FPcat)"
                   icon>
                   <v-icon>mdi-eye-outline</v-icon>
                 </v-btn>
                 <v-btn
-                  v-if="!FPcat.visible"
-                  class="mr-2"
+                  v-if="!FPcat.visible && FPcat.parentVisible"
+                  class="ml-2"
                   @click="chgFPCategoryVisible(FPcat)"
                   icon>
                   <v-icon>mdi-eye-off-outline</v-icon>
@@ -38,7 +56,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-icon
                       :small="!FPcat.visible"
-                      class="pl-2"
+                      :class="!FPcat.visible ? 'ml-5' : 'ml-2'"
                       v-bind="attrs"
                       v-on="on"
                     >mdi-information-outline</v-icon>
@@ -50,20 +68,36 @@
                 </v-tooltip>
                 <v-col cols="12" md="3" class="ma-0 pa-0">
                   <span
-                    :class="FPcat.visible ? 'font-weight-black pl-2' : 'font-weight-thin pl-2'"
+                    :class="!FPcat.visible || !FPcat.parentVisible ? 'font-weight-thin pl-2' : 'font-weight-black pl-2'"
                   >
                   {{FPcat.title | capitalize}}
                   </span>
                 </v-col>
                 <v-col cols="12" md="3" class="ma-0 pa-0">
+                  <template v-if="!FPcat.parentId">
+                    <v-tooltip left>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-icon
+                          :small="!FPcat.visible"
+                          class="ml-2"
+                          v-bind="attrs"
+                          v-on="on"
+                          :color="!FPcat.parentId ? 'red' : ''"
+                        >mdi-folder-remove-outline</v-icon>
+                      </template>
+                      <span>
+                    <div>Группа категорий не существует</div>
+                  </span>
+                    </v-tooltip>
+                  </template>
+                  <template v-if="FPcat.parentId">
                   <v-tooltip left>
                     <template v-slot:activator="{ on, attrs }">
                       <v-icon
-                        :small="!FPcat.visible"
-                        class="pl-2"
+                        :small="!FPcat.visible || !FPcat.parentVisible"
+                        class="ml-2"
                         v-bind="attrs"
                         v-on="on"
-                        :color="!FPcat.FPcatGroupId ? 'red' : ''"
                       >mdi-folder-information-outline</v-icon>
                     </template>
                     <span>
@@ -71,16 +105,17 @@
                     <div v-else>Нет комментариев</div>
                   </span>
                   </v-tooltip>
+                  </template>
                   <span
-                    :class="FPcat.visible ? 'font-weight-black pl-2' : 'font-weight-thin pl-2'"
+                    :class="!FPcat.visible || !FPcat.parentVisible ? 'font-weight-thin pl-2' : 'font-weight-black pl-2'"
                   >
-                  {{FPcat.FPcatGroupTitle | toUpperCase}}
+                  {{FPcat.parentTitle | toUpperCase}}
                   </span>
                 </v-col>
                 <v-spacer />
                 <v-switch
                   :dense="!FPcat.visible"
-                  v-model="FPcat.expenses"
+                  :input-value="FPcat.expenses"
                   @change="toChangeSwitch(FPcat, 'expenses')"
                   class="px-0 mt-0 mr-12 pb-0"
                   label="Расходы"
@@ -90,7 +125,7 @@
                 </v-switch>
                 <v-switch
                   :dense="!FPcat.visible"
-                  v-model="FPcat.entrances"
+                  :input-value="FPcat.entrances"
                   @change="toChangeSwitch(FPcat, 'entrances')"
                   class="pa-0 my-0 mr-12"
                   label="Поступления"
@@ -130,39 +165,35 @@ export default {
     loading () {
       return this.$store.getters.loading
     },
-    FPcategories () {
-      return this.MXsortedRuEnFPCategories()
-    },
-    FPcatGroupTitleClass (FPcat) {
-      let classId = ''
-      let classVi = ''
-      if (!FPcat.FPcatGroupId) { classId = 'red--text' }
-      if (!FPcat.visible) {
-        classVi = 'font-weight-thin'
-      } else {
-        classVi = 'font-weight-black'
-      }
-      return classId + classVi + 'pl-2'
+    FPcategoriesLength () {
+      return !!this.MXsortedRuEnFPcategories().length
     }
   },
   methods: {
+    FPcategoriesList () {
+      return [...this.MXsortedRuEnFPcategories()] || []
+    },
     editFPCategory (FPcategory) {
       this.$store.dispatch('chgItemMode', 'FPcategoryEdit')
       this.$store.dispatch('chgEditItem', FPcategory)
       this.$store.dispatch('chgEditMode', 'edit')
       eventEmitter.$emit('toChgByEditItem')
     },
-    toChangeSwitch (FPcat, type) {
+    toChangeSwitch (item, type) {
+      const newItem = Object.assign({}, item)
       if (type === 'expenses') {
-        if (!FPcat.expenses) { FPcat.entrances = true }
+        newItem.expenses = !item.expenses
+        if (!newItem.expenses) { newItem.entrances = true }
       } else {
-        if (!FPcat.entrances) { FPcat.expenses = true }
+        newItem.entrances = !item.entrances
+        if (!newItem.entrances) { newItem.expenses = true }
       }
-      this.MXtoEditFPCategory(FPcat)
+      this.MXtoEditFPCategory(newItem)
     },
-    chgFPCategoryVisible (FPcat) {
-      FPcat.visible = !FPcat.visible
-      this.MXtoEditFPCategory(FPcat)
+    chgFPCategoryVisible (cat) {
+      const newCat = Object.assign({}, cat)
+      newCat.catVisible = !cat.catVisible
+      this.MXtoEditFPCategory(newCat)
     },
     onScroll (e) {
       this.offsetTop = e.target.scrollTop

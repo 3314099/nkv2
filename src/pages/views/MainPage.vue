@@ -94,6 +94,7 @@ export default {
   },
   mounted () {
     this.MXuploadFPSections()
+    this.MXuploadFPsecGroups()
     this.MXuploadFPCatGroups()
     this.MXuploadFPCategories()
   },

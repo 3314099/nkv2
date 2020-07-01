@@ -11,7 +11,7 @@
                 v-model="titleField"
                 class="pa-1"
                 style="min-width: 400px"
-                label="Наименование группы категорий"
+                label="Наименование группы"
                 type: String
                 hint="Не менее 3-х и не более 15-ти символов"
                 :error-messages="titleFieldErrors"
@@ -94,10 +94,10 @@
 <script>
 import { eventEmitter } from '@/main'
 import { validationMixin } from 'vuelidate'
-import FPcategories from '@/mixins/FinPlan/FPcategories.js'
+import FPsections from '@/mixins/FinPlan/FPsections.js'
 export default {
-  name: 'catGroupEdit',
-  mixins: [validationMixin, FPcategories],
+  name: 'FPsecGroupEdit',
+  mixins: [validationMixin, FPsections],
   components: {
   },
   validations: {
@@ -152,7 +152,7 @@ export default {
     },
     valTitleField () {
       let unique = true
-      const findUnique = this.MXFPcatGroups()
+      const findUnique = this.MXFPsecGroups()
         .find(item => item.title.toLowerCase() === this.titleField.toLowerCase())
       if (findUnique) { unique = false }
       if (this.getEditItem().title) {
@@ -218,7 +218,7 @@ export default {
           item.comment = this.commentField
           item.rating = this.rating
           item.visible = true
-          this.MXtoCreateFPCatGroup(item)
+          this.MXtoCreateFPsecGroup(item)
           break
         case 'edit':
           if (this.$v.$invalid) {
@@ -230,11 +230,11 @@ export default {
           item.comment = this.commentField
           item.rating = this.rating
           item.visible = true
-          this.MXtoEditFPCatGroup(item)
+          this.MXtoEditFPsecGroup(item)
           break
         case 'remove':
           this.$store.dispatch('chgLoading', 'true')
-          this.MXtoRemoveFPCatGroup(this.getEditItem().id)
+          this.MXtoRemoveFPsecGroup(this.getEditItem().id)
           break
         default: // cancel
           break

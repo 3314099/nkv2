@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div v-if="loading !== true && sections.length === 0" class="text-center">
+    <div v-if="loading !== true && sectionsList.length === 0" class="text-center">
       <h1 class="font-weight-bold display-1 teal--text ">Список пуст</h1>
     </div>
-    <div v-if="sections.length">
+    <div v-if="sectionsList.length">
     <ul class="pl-0 pt-0 mt-1">
       <v-container
         id="scroll-target"
@@ -12,7 +12,7 @@
       >
         <li
           class=""
-          v-for="(section, i) in sections"
+          v-for="(section, i) in sectionsList"
           :key="i"
           :draggable="draggable"
           @dragstart="dragStart(i, $event)"
@@ -25,27 +25,45 @@
           <v-card
             class="my-1"
             outlined
+            :class="!section.visible ? 'grey lighten-4' : ''"
           >
-            <v-card-actions class="ma-0 px-0" >
+            <v-card-actions :class="!section.visible ? 'grey lighten-4 ma-0 py-0' : ''" >
               <v-col cols="12" md="4" class="ma-0 pa-0">
                 <v-icon>mdi-drag-vertical</v-icon>
-                <v-chip class="mx-2" small :color="section.color"> {{     }}</v-chip>
                 <v-btn
-                  v-if="section.selected"
-                  @click="toChangeCheckAccount(false, account.id)"
+                  v-if="section.visible"
+                  class="mr-2"
+                  @click="chgFPSectionVisible(section)"
                   icon>
-                  <v-icon>mdi-check-box-outline</v-icon>
+                  <v-icon>mdi-eye-outline</v-icon>
                 </v-btn>
                 <v-btn
-                  @click="toChangeCheckAccount(true,account.id)"
-                  icon
-                >
-                  <v-icon>mdi-checkbox-blank-outline</v-icon>
+                  v-if="!section.visible"
+                  class="mr-2"
+                  @click="chgFPSectionVisible(section)"
+                  icon>
+                  <v-icon>mdi-eye-off-outline</v-icon>
                 </v-btn>
+                <v-chip class="mx-2" small :color="section.color"> {{     }}</v-chip>
+                <v-tooltip left>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-icon
+                      class="pl-2"
+                      v-bind="attrs"
+                      v-on="on"
+                      :small="!section.visible"
+                      :class="!section.visible ? 'pl-5' : 'pl-2'"
+                    >mdi-information-outline</v-icon>
+                  </template>
+                  <span>
+                    <div v-if="section.comment">{{section.comment}}</div>
+                    <div v-else>Нет комментариев</div>
+                  </span>
+                </v-tooltip>
                 <span
-                  class="font-weight-black text-transform: uppercase"
+                  :class="!section.visible ? 'font-weight-thin pl-2' : 'font-weight-black pl-2'"
                 >
-            {{section.title}}
+            {{section.title | toUpperCase}}
                   </span>
               </v-col>
               <v-col cols="12" md="3" class="ma-0 pa-0">
@@ -112,7 +130,7 @@ export default {
     loading () {
       return this.$store.getters.loading
     },
-    sections () {
+    sectionsList () {
       return this.MXsortedRuEnFPSections()
     },
     isDragging () {
@@ -160,9 +178,18 @@ export default {
     },
     moveItem (from, to) {
       this.$store.dispatch('chgLoading', 'true')
-      const sections = this.MXFPsections()
+      const sections = [...this.MXFPsectionsSortedBysectionsSerial()]
       sections.splice(to, 0, sections.splice(from, 1)[0])
       this.MXtoEditFPSectionSerial(this.UarrayFromObjectsArrayByField(sections, 'id'))
+    },
+    // chgFPSectionVisible (section) {
+    //   section.visible = !section.visible
+    //   this.MXtoEditFPSection(section)
+    // }
+    chgFPSectionVisible (section) {
+      const newSection = Object.assign({}, section)
+      newSection.visible = !section.visible
+      this.MXtoEditFPSection(newSection)
     }
   }
 }

@@ -8,14 +8,14 @@
           <div class="d-flex justify-space-between">
             <div>
               <v-text-field
-                v-model="searchField"
+                v-model="titleField"
                 class="pa-1"
                 style="min-width: 400px"
                 label="Наименование раздела"
                 type: String
                 hint="Не менее 3-х и не более 15-ти символов"
-                :error-messages="childTitleFieldErrors"
-                @blur="$v.childTitleField.$touch()"
+                :error-messages="titleFieldErrors"
+                @blur="$v.titleField.$touch()"
                 dense
                 outlined
                 small
@@ -34,8 +34,8 @@
             <v-text-field
               v-model="commentField"
               hint="не более 100 символов"
-              :error-messages="childCommentFieldErrors"
-              @blur="$v.childCommentField.$touch()"
+              :error-messages="commentFieldErrors"
+              @blur="$v.commentField.$touch()"
               class="pa-1 pb-0"
               label="Комментарий"
               dense
@@ -95,29 +95,23 @@ export default {
   components: {
     colorPicker
   },
-  data () {
-    return {
-      expenses: true,
-      entrances: true
-    }
-  },
   validations: {
-    childTitleField: {
+    titleField: {
       unique: function () {
-        return this.valСhildTitleField.unique
+        return this.valTitleField.unique
       },
       length: function () {
-        return this.valСhildTitleField.length
+        return this.valTitleField.length
       }
     },
-    childCommentField: {
+    commentField: {
       length: function () {
-        return this.valСhildComentField.length
+        return this.valCommentField.length
       }
     }
   },
   computed: {
-    searchField: {
+    titleField: {
       get: function () {
         return this.$store.getters.searchField
       },
@@ -141,57 +135,43 @@ export default {
       this.toChgByEditItem()
       return this.MXcolorsIgnoreArray()
     },
-    valСhildTitleField () {
+    valTitleField () {
       let unique = true
       const findUnique = this.MXFPsections()
-        .find(item => item.title.toLowerCase() === this.childTitleField.toLowerCase())
+        .find(item => item.title.toLowerCase() === this.titleField.toLowerCase())
       if (findUnique) { unique = false }
       if (this.getEditItem().title) {
-        if (this.getEditItem() && this.childTitleField.toLowerCase() ===
+        if (this.getEditItem() && this.titleField.toLowerCase() ===
           this.getEditItem().title.toLowerCase()) {
           unique = true
         }
       }
       let length = true
-      this.childTitleField.length > 2 && this.childTitleField.length < 31
+      this.titleField.length > 2 && this.titleField.length < 31
         ? length = true : length = false
       return {
         length: length,
         unique: unique
       }
     },
-    valСhildComentField () {
-      const valСhildCommentField = {}
+    valCommentField () {
+      const valCommentField = {}
       let length = true
-      this.childCommentField.length < 100 ? length = true : length = false
-      valСhildCommentField.length = length
-      return valСhildCommentField
+      this.commentField.length < 100 ? length = true : length = false
+      valCommentField.length = length
+      return valCommentField
     },
-    childTitleField () {
-      if (this.searchField) {
-        return this.searchField
-      } else {
-        return ''
-      }
-    },
-    childCommentField () {
-      if (this.commentField) {
-        return this.commentField
-      } else {
-        return ''
-      }
-    },
-    childTitleFieldErrors () {
+    titleFieldErrors () {
       const errors = []
-      if (!this.$v.childTitleField.$dirty) return errors
-      !this.$v.childTitleField.length && errors.push('Не менее 3-х и не более 15-ти символов')
-      !this.$v.childTitleField.unique && errors.push('Наименование уже существует')
+      if (!this.$v.titleField.$dirty) return errors
+      !this.$v.titleField.length && errors.push('Не менее 3-х и не более 15-ти символов')
+      !this.$v.titleField.unique && errors.push('Наименование уже существует')
       return errors
     },
-    childCommentFieldErrors () {
+    commentFieldErrors () {
       const errors = []
-      if (!this.$v.childCommentField.$dirty) return errors
-      !this.$v.childCommentField.length && errors.push('Не более 100 символов')
+      if (!this.$v.commentField.$dirty) return errors
+      !this.$v.commentField.length && errors.push('Не более 100 символов')
       return errors
     }
   },
@@ -202,27 +182,11 @@ export default {
     getEditItem () {
       return this.$store.getters.editItem
     },
-    chgSearchField (v) {
-      let searchField = ''
-      v ? searchField = v : searchField = ''
-      this.$store.dispatch('chgSearchField', searchField)
-    },
     toChgByEditItem () {
       if (this.getEditItem().id) {
         this.$store.dispatch('chgSearchField', this.getEditItem().title)
         this.$store.dispatch('chgCommentField', this.getEditItem().comment)
-        this.expenses = this.getEditItem().expenses
-        this.entrances = this.getEditItem().entrances
         this.$store.dispatch('colorPicker', this.getEditItem().color)
-      }
-    },
-    toChangeSwitch (type, val) {
-      if (type === 'expenses') {
-        this.expenses = val
-        if (!this.expenses) { this.entrances = true }
-      } else {
-        this.entrances = val
-        if (!this.entrances) { this.expenses = true }
       }
     },
     button (mode) {
@@ -235,17 +199,11 @@ export default {
             return
           }
           this.$store.dispatch('chgLoading', 'true')
-          item.title = this.childTitleField
-          item.comment = this.childCommentField
+          item.title = this.titleField
+          item.comment = this.commentField
           item.color = this.$store.getters.colorPicker
+          item.visible = true
           this.MXtoCreateFPSection(item)
-          this.mode = ''
-          this.titleField = ''
-          this.commentField = ''
-          this.$store.dispatch('colorPicker', '')
-          this.$store.dispatch('chgSearchField', '')
-          this.$store.dispatch('chgEditMode', '')
-          this.$v.$reset()
           break
         case 'edit':
           if (this.$v.$invalid) {
@@ -253,37 +211,24 @@ export default {
             return
           }
           item.id = this.getEditItem().id
-          item.title = this.childTitleField
-          item.comment = this.childCommentField
+          item.title = this.titleField
+          item.comment = this.commentField
           item.color = this.$store.getters.colorPicker
+          item.visible = true
           this.MXtoEditFPSection(item)
-          this.mode = ''
-          this.titleField = ''
-          this.commentField = ''
-          this.$store.dispatch('colorPicker', '')
-          this.$store.dispatch('chgSearchField', '')
-          this.$store.dispatch('chgEditMode', '')
-          this.$v.$reset()
           break
         case 'remove':
           this.$store.dispatch('chgLoading', 'true')
           this.MXtoRemoveFPSection(this.getEditItem().id)
-          this.mode = ''
-          this.titleField = ''
-          this.commentField = ''
-          this.$store.dispatch('colorPicker', '')
-          this.$store.dispatch('chgEditMode', '')
-          this.$v.$reset()
           break
         default: // cancel
-          this.$store.dispatch('chgSearchField', '')
-          this.$store.dispatch('chgEditMode', '')
-          this.titleField = ''
-          this.commentField = ''
-          // this.$store.dispatch('chgEditItem', {})
-          // this.$store.dispatch('chgItemMode', 'default')
-          this.$v.$reset()
+          break
       }
+      this.$v.$reset()
+      this.$store.dispatch('colorPicker', '')
+      this.$store.dispatch('chgSearchField', '')
+      this.$store.dispatch('chgCommentField', '')
+      this.$store.dispatch('chgEditMode', '')
       this.$store.dispatch('chgItemMode', 'default')
       this.$store.dispatch('chgEditItem', {})
     }

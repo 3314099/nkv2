@@ -1,8 +1,8 @@
 <template>
   <div>
+    {{aaa()}}
     <v-row no-gutters style="flex-wrap: nowrap;">
       <v-col
-        v-if="FPcategoriesTable !== 'FPcatGroups'"
         class="flex-grow-0 flex-shrink-0"
       >
         <v-btn-toggle
@@ -36,6 +36,7 @@
         <v-btn-toggle
           class="pr-2"
           v-model="sortButton"
+          mandatory
         >
           <v-btn
             active-class="true"
@@ -156,7 +157,8 @@ export default {
       set: function (sortButton) {
         switch (sortButton) {
           case 1:
-            sortButton = 'rating'
+            this.FPcategoriesTable === 'FPcatGroups'
+              ? sortButton = 'rating' : sortButton = 'parentRating'
             break
           case 2:
             sortButton = 'parentAlphabet'
@@ -218,6 +220,9 @@ export default {
     }
   },
   methods: {
+    aaa () {
+      return this.$store.getters.FPcategories[0].visible
+    },
     chgTableMode (tableMode) {
       this.$store.dispatch('chgTableMode', tableMode)
     },

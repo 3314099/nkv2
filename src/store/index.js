@@ -13,6 +13,7 @@ import FPcategories from '@/store/FinPlan/FPcategories.js'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  strict: true,
   modules: {
     auth,
     FPmodes,

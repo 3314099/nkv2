@@ -12,6 +12,10 @@ export default {
     async MXuploadFPCategories () {
       await this.$store.dispatch('fetchFPCategories')
       this.$store.dispatch('chgLoading', 'false')
+    },
+    async MXuploadFPsecGroups () {
+      await this.$store.dispatch('fetchFPsecGroups')
+      this.$store.dispatch('chgLoading', 'false')
     }
   }
 }

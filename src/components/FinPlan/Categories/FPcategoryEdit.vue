@@ -11,7 +11,7 @@
                 v-model="titleField"
                 class="pa-1"
                 style="min-width: 400px"
-                label="Наименование раздела"
+                label="Наименование категории"
                 type: String
                 hint="Не менее 3-х и не более 15-ти символов"
                 :error-messages="titleFieldErrors"
@@ -278,7 +278,7 @@ export default {
         this.$store.dispatch('chgSearchField', this.getEditItem().title)
         this.$store.dispatch('chgCommentField', this.getEditItem().comment)
         let stdFPCatGroup = this.MXFPcatGroups()
-          .find(item => item.id === this.getEditItem().FPcatGroupId)
+          .find(item => item.id === this.getEditItem().parentId)
         if (!stdFPCatGroup) { stdFPCatGroup = {} }
         this.$store.dispatch('chgStdFPCatGroup', stdFPCatGroup)
         this.expenses = this.getEditItem().expenses
@@ -307,11 +307,11 @@ export default {
           }
           this.$store.dispatch('chgLoading', 'true')
           item.title = this.titleField
-          item.FPcatGroupId = this.stdFPCatGroup.id
+          item.parentId = this.stdFPCatGroup.id
           item.comment = this.commentField
           item.expenses = this.expenses
           item.entrances = this.entrances
-          item.visible = true
+          item.catVisible = true
           this.MXtoCreateFPCategory(item)
           break
         case 'edit':
@@ -322,10 +322,10 @@ export default {
           item.id = this.getEditItem().id
           item.title = this.titleField
           item.comment = this.commentField
-          item.FPcatGroupId = this.stdFPCatGroup.id
+          item.parentId = this.stdFPCatGroup.id
           item.expenses = this.expenses
           item.entrances = this.entrances
-          item.visible = true
+          item.catVisible = true
           this.MXtoEditFPCategory(item)
           break
         case 'remove':

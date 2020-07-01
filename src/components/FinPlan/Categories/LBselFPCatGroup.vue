@@ -72,13 +72,11 @@
                     <div v-else>Нет комментариев</div>
                   </span>
                   </v-tooltip>
-                  <v-col cols="12" md="4" class="ma-0 pa-0">
                   <span
                     class="font-weight-black text-transform: uppercase pl-2"
                   >
                   {{LBFPcatGroup.title}}
                   </span>
-                  </v-col>
                 </v-card-actions>
               </v-card>
             </li>

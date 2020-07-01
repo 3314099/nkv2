@@ -11,7 +11,7 @@ export default {
         const uid = await dispatch('getUid')
         const FPcatGroups = (await firebase.database().ref(`/users/${uid}/FPcatGroups`).once('value')).val() || {}
         const FPcgps = Object.keys(FPcatGroups).map(key => ({ ...FPcatGroups[key], id: key }))
-        commit('updateFPCatGroups', FPcgps)
+        commit('UPDATE_FP_CAT_GROUPS', FPcgps)
       } catch (e) {
         commit('setError', e)
         throw e
@@ -20,20 +20,23 @@ export default {
     async DBcreateFPCatGroup ({ commit, dispatch }, {
       title,
       comment,
-      rating
+      rating,
+      visible
     }) {
       try {
         const uid = await dispatch('getUid')
         const FPcatGroup = await firebase.database().ref(`/users/${uid}/FPcatGroups`).push({
           title,
           comment,
-          rating
+          rating,
+          visible
         })
         return {
           id: FPcatGroup.key,
           title,
           comment,
-          rating
+          rating,
+          visible
         }
       } catch (e) {
         commit('setError', e)
@@ -44,7 +47,8 @@ export default {
       id,
       title,
       comment,
-      rating
+      rating,
+      visible
     }) {
       try {
         const uid = await dispatch('getUid')
@@ -52,13 +56,15 @@ export default {
           id,
           title,
           comment,
-          rating
+          rating,
+          visible
         })
         return {
           id,
           title,
           comment,
-          rating
+          rating,
+          visible
         }
       } catch (e) {
         commit('setError', e)
@@ -74,15 +80,16 @@ export default {
         throw e
       }
     },
-    updateFPCatGroups ({ commit }, FPcatGroups) {
-      commit('updateFPCatGroups', FPcatGroups)
+    updateFPCatGroups ({ state, commit }, FPcatGroups) {
+      commit('UPDATE_FP_CAT_GROUPS', FPcatGroups)
+      commit('UPDATE_FP_CATEGORIES', state.FPcategories)
     },
     async fetchFPCategories ({ commit, dispatch }) {
       try {
         const uid = await dispatch('getUid')
         const FPcategories = (await firebase.database().ref(`/users/${uid}/FPcategories`).once('value')).val() || {}
         const FPctgs = Object.keys(FPcategories).map(key => ({ ...FPcategories[key], id: key }))
-        commit('updateFPCategories', FPctgs)
+        commit('UPDATE_FP_CATEGORIES', FPctgs)
       } catch (e) {
         commit('setError', e)
         throw e
@@ -90,30 +97,30 @@ export default {
     },
     async DBcreateFPCategory ({ commit, dispatch }, {
       title,
-      FPcatGroupId,
+      parentId,
       comment,
       expenses,
       entrances,
-      visible
+      catVisible
     }) {
       try {
         const uid = await dispatch('getUid')
         const FPcategory = await firebase.database().ref(`/users/${uid}/FPcategories`).push({
           title,
-          FPcatGroupId,
+          parentId,
           comment,
           expenses,
           entrances,
-          visible
+          catVisible
         })
         return {
           id: FPcategory.key,
           title,
-          FPcatGroupId,
+          parentId,
           comment,
           expenses,
           entrances,
-          visible
+          catVisible
         }
       } catch (e) {
         commit('setError', e)
@@ -123,31 +130,31 @@ export default {
     async DBeditFPCategory ({ commit, dispatch }, {
       id,
       title,
-      FPcatGroupId,
+      parentId,
       comment,
       expenses,
       entrances,
-      visible
+      catVisible
     }) {
       try {
         const uid = await dispatch('getUid')
         await firebase.database().ref(`/users/${uid}/FPcategories`).child(id).update({
           id,
           title,
-          FPcatGroupId,
+          parentId,
           comment,
           expenses,
           entrances,
-          visible
+          catVisible
         })
         return {
           id,
           title,
-          FPcatGroupId,
+          parentId,
           comment,
           expenses,
           entrances,
-          visible
+          catVisible
         }
       } catch (e) {
         commit('setError', e)
@@ -164,21 +171,52 @@ export default {
       }
     },
     updateFPCategories ({ commit }, FPcategories) {
-      commit('updateFPCategories', FPcategories)
+      commit('UPDATE_FP_CATEGORIES', FPcategories)
     },
     chgStdFPCatGroup ({ commit }, stdFPCatGroup) {
-      commit('chgStdFPCatGroup', stdFPCatGroup)
+      commit('CHG_STD_FP_CAT_GROUP', stdFPCatGroup)
     }
   },
   mutations: {
-    updateFPCatGroups (state, FPcatGroups) {
-      state.FPcatGroups = FPcatGroups
+    UPDATE_FP_CAT_GROUPS (state, preload) {
+      state.FPcatGroups = [...preload]
     },
-    updateFPCategories (state, FPcategories) {
-      state.FPcategories = FPcategories
+    UPDATE_FP_CATEGORIES (state, preload) {
+      if (preload) {
+        const newFPcategories = [...preload]
+        newFPcategories.forEach((FPcategory) => {
+          FPcategory.type = 'FPCategory'
+          FPcategory.parentVisible = true
+          const catGroup = state.FPcatGroups
+            .find(FPcatGroup => FPcatGroup.id === FPcategory.parentId)
+          if (catGroup) {
+            FPcategory.parentTitle = catGroup.title
+            FPcategory.parentRating = catGroup.rating
+            FPcategory.parentComment = catGroup.comment
+            !FPcategory.catVisible
+              ? FPcategory.visible = false : FPcategory.visible = true
+            if (!catGroup.visible) {
+              FPcategory.parentVisible = false
+              FPcategory.visible = false
+            } else {
+              FPcategory.parentVisible = true
+            }
+          } else {
+            FPcategory.parentId = ''
+            FPcategory.parentTitle = 'Без группы'
+            FPcategory.parentRating = 1
+            FPcategory.parentComment = ''
+            FPcategory.parentVisible = true
+          }
+        }
+        )
+        state.FPcategories = newFPcategories
+      } else {
+        state.FPcategories = []
+      }
     },
-    chgStdFPCatGroup (state, stdFPCatGroup) {
-      state.stdFPCatGroup = stdFPCatGroup
+    CHG_STD_FP_CAT_GROUP (state, preload) {
+      state.stdFPCatGroup = preload
     }
   },
   getters: {

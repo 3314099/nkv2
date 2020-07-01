@@ -39,7 +39,7 @@
                 class="mx-1"
                 outlined
                 color="primary"
-                @click= "chgItemMode('FPgroupCreate')"
+                @click= "chgItemMode('FPsecGroupCreate')"
               >
                 Создать группу
               </v-btn>
@@ -68,13 +68,6 @@ export default {
         let searchField = ''
         v ? searchField = v : searchField = ''
         this.$store.dispatch('chgSearchField', searchField)
-      }
-    },
-    childTitleField () {
-      if (this.titleField) {
-        return this.titleField
-      } else {
-        return ''
       }
     }
   },

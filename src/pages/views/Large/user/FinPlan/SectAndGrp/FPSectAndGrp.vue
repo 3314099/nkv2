@@ -12,9 +12,9 @@
         <FPsectionEdit/>
       </v-tab-item>
       <v-tab-item
-        :value="'FPgroupCreate'"
+        :value="'FPsecGroupCreate'"
       >
-        <FPgroupEdit/>
+        <FPsecGroupEdit/>
       </v-tab-item>
       <v-tab-item
         :value="'FPsectionEdit'"
@@ -22,9 +22,9 @@
         <FPsectionEdit/>
       </v-tab-item>
       <v-tab-item
-        :value="'FPgroupEdit'"
+        :value="'FPsecGroupEdit'"
       >
-        <FPgroupEdit/>
+        <FPsecGroupEdit/>
       </v-tab-item>
     </v-tabs-items>
     <FPSectAndGrpTables/>
@@ -34,14 +34,14 @@
 <script>
 import FPsectAndGrpDefault from '@/components/FinPlan/SectAndGrp/FPsectAndGrpDefault'
 import FPsectionEdit from '@/components/FinPlan/SectAndGrp/FPsectionEdit'
-import FPgroupEdit from '@/components/FinPlan/SectAndGrp/FPgroupEdit'
+import FPsecGroupEdit from '@/components/FinPlan/SectAndGrp/FPsecGroupEdit'
 import FPSectAndGrpTables from '@/pages/views/Large/user/FinPlan/SectAndGrp/FPSectAndGrpTables'
 export default {
   name: 'SectAndGrp',
   components: {
     FPsectAndGrpDefault,
     FPsectionEdit,
-    FPgroupEdit,
+    FPsecGroupEdit,
     FPSectAndGrpTables
   },
   computed: {
@@ -57,15 +57,17 @@ export default {
             sectionsAndGroupsMode = 'FPsectionCreate'
             this.$store.dispatch('chgTableMode', 'FPsections')
             break
-          case 'FPgroupCreate':
-            sectionsAndGroupsMode = 'FPgroupCreate'
-            this.$store.dispatch('chgTableMode', 'FPgroups')
+          case 'FPsecGroupCreate':
+            sectionsAndGroupsMode = 'FPsecGroupCreate'
+            this.$store.dispatch('chgTableMode', 'FPsecGroups')
             break
           case 'FPsectionEdit':
             sectionsAndGroupsMode = 'FPsectionEdit'
+            this.$store.dispatch('chgTableMode', 'FPsections')
             break
-          case 'groupEdit':
-            sectionsAndGroupsMode = 'FPgroupEdit'
+          case 'FPsecGroupEdit':
+            sectionsAndGroupsMode = 'FPsecGroupEdit'
+            this.$store.dispatch('chgTableMode', 'FPsecGroups')
             break
           default:
             sectionsAndGroupsMode = 'FPsectAndGrpDefault'

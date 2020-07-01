@@ -27,7 +27,7 @@
                 class="mx-1"
                 outlined
                 color="primary"
-                @click= "chgItemMode('FPcatGroupCreate')"
+                @click="chgItemMode('FPcatGroupCreate')"
               >
                 Создать группу категорий
               </v-btn>
@@ -36,11 +36,11 @@
               class="pa-1"
             >
               <v-btn
-                :disabled="FPcatGroups"
+                :disabled="!FPcatGroupsLength"
                 class="mx-1"
                 outlined
                 color="primary"
-                @click= "chgItemMode('FPcategoryCreate')"
+                @click="chgItemMode('FPcategoryCreate')"
               >
                 Создать категорию
               </v-btn>
@@ -68,12 +68,8 @@ export default {
         this.$store.dispatch('chgSearchField', searchField)
       }
     },
-    FPcatGroups () {
-      if (this.MXFPcatGroups().length) {
-        return false
-      } else {
-        return true
-      }
+    FPcatGroupsLength () {
+      return !!this.MXFPcatGroups().length
     }
   },
   methods: {

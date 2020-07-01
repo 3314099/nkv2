@@ -43,6 +43,42 @@ export default {
         return [...array].sort((a, b) => a[field] > b[field] ? 1 : -1)
       }
     },
+    UsortByVisibleButton (array) {
+      if (array) {
+        switch (this.$store.getters.RBtn) {
+          case 'visible':
+            array = this.UfilterByType(array, 'visible', true)
+            break
+          case 'unvisible':
+            array = this.UfilterByType(array, 'visible', false)
+            break
+          default: // 'all'
+            break
+        }
+        return array
+      } else {
+        return []
+      }
+    },
+    UsortBySortButton (array) {
+      if (array) {
+        array = this.UsortObjectsArray(array, 'title', false) // 'titleAlphabet'
+        switch (this.sortButton()) {
+          case 'parentAlphabet':
+            array = this.UsortObjectsArray(array.reverse(), 'parentTitle', false)
+            break
+          case 'rating':
+            array = this.UsortObjectsArray(array, 'rating', true)
+            break
+          case 'parentRating':
+            array = this.UsortObjectsArray(array, 'parentRating', true)
+            break
+        }
+        return array
+      } else {
+        return []
+      }
+    },
     UsortRuEnArray (arr, val) {
       if (!val) {
         return arr
