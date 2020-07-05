@@ -16,6 +16,9 @@
         <v-window-item>
           <Currency/>
         </v-window-item>
+        <v-window-item>
+          <store/>
+        </v-window-item>
       </v-window>
     </div>
   </div>
@@ -26,13 +29,15 @@ import RightPanelButtons from '@/components/RightBar/rightBarPanelButtons'
 import Calendar from '@/components/RightBar/Calendar'
 import Calculator from '@/components/RightBar/Calculator'
 import Currency from '@/components/RightBar/Currency'
+import store from '@/pages/views/store'
 export default {
   name: 'RightBar',
   components: {
     RightPanelButtons,
     Calendar,
     Calculator,
-    Currency
+    Currency,
+    store
   },
   computed: {
     // rightBarMode(){
@@ -49,6 +54,9 @@ export default {
           break
         case 'currency':
           RMWin = 2
+          break
+        case 'store':
+          RMWin = 3
           break
         default:
           RMWin = 0

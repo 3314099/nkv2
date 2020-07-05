@@ -8,6 +8,21 @@
           <div class="d-flex justify-space-between">
             <div>
               <v-text-field
+                v-model="stdFPCatGroup.title"
+                class="pa-1"
+                style="min-width: 500px"
+                value=""
+                label="Группа категорий (выберите в левом меню)"
+                :error-messages="stdFPCatGroupErrors"
+                @blur="$v.stdFPCatGroup.$touch()"
+                outlined
+                readonly
+                dense
+              ></v-text-field>
+            </div>
+            <div>
+              <v-text-field
+                ref="titleField"
                 v-model="titleField"
                 class="pa-1"
                 style="min-width: 400px"
@@ -23,20 +38,6 @@
                 counter="15"
               >
               </v-text-field>
-            </div>
-            <div>
-              <v-text-field
-                v-model="stdFPCatGroup.title"
-                class="pa-1"
-                style="min-width: 500px"
-                value=""
-                label="Группа категорий (выберите в левом меню)"
-                :error-messages="stdFPCatGroupErrors"
-                @blur="$v.stdFPCatGroup.$touch()"
-                outlined
-                readonly
-                dense
-              ></v-text-field>
             </div>
           </div>
           <div>
@@ -174,6 +175,9 @@ export default {
     eventEmitter.$on('toChgByEditItem', () => {
       this.toChgByEditItem()
     })
+    eventEmitter.$on('changedStdFPCatGroup', () => {
+      this.focusInput()
+    })
   },
   computed: {
     titleField: {
@@ -267,6 +271,9 @@ export default {
     }
   },
   methods: {
+    focusInput () {
+      this.$refs.titleField.focus()
+    },
     getEditMode () {
       return this.$store.getters.editMode
     },

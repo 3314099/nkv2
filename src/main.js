@@ -58,6 +58,9 @@ Vue.filter('countAccounts', (lmBtnId, accounts) => {
 Vue.filter('toUpperCase', (text) => {
   return text.toString().toUpperCase()
 })
+Vue.filter('toLowerCase', (text) => {
+  return text.toString().toLowerCase()
+})
 Vue.filter('capitalize', (text) => {
   text.toLowerCase()
   return text[0].toString().toUpperCase() + text.slice(1)

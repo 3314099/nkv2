@@ -6,6 +6,7 @@
       <div class="d-flex justify-start justify-space-between">
         <div class="d-flex justify-space-between">
           <v-text-field
+            autofocus
             class="pa-1"
             style="min-width: 280px"
             label="Строка поиска"
@@ -27,7 +28,7 @@
                 class="mx-1"
                 outlined
                 color="primary"
-                @click="chgItemMode('FPcatGroupCreate')"
+                @click="chgItemMode('FPcatGroup')"
               >
                 Создать группу категорий
               </v-btn>
@@ -40,7 +41,7 @@
                 class="mx-1"
                 outlined
                 color="primary"
-                @click="chgItemMode('FPcategoryCreate')"
+                @click="chgItemMode('FPcategory')"
               >
                 Создать категорию
               </v-btn>
@@ -76,6 +77,7 @@ export default {
     chgItemMode (itemMode) {
       this.$store.dispatch('chgItemMode', itemMode)
       this.$store.dispatch('chgEditMode', 'create')
+      this.$store.dispatch('chgLeftBarMode')
     }
   }
 }

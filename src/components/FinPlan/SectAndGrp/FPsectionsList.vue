@@ -139,7 +139,7 @@ export default {
   },
   methods: {
     editSection (section) {
-      this.$store.dispatch('chgItemMode', 'FPsectionEdit')
+      this.$store.dispatch('chgItemMode', 'FPsection')
       this.$store.dispatch('chgEditItem', section)
       this.$store.dispatch('chgEditMode', 'edit')
     },

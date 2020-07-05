@@ -7,22 +7,12 @@
         <FPcategoriesDefault/>
       </v-tab-item>
       <v-tab-item
-        :value="'FPcatGroupCreate'"
+        :value="'FPcatGroup'"
       >
         <FPcatGroupEdit/>
       </v-tab-item>
       <v-tab-item
-        :value="'FPcategoryCreate'"
-      >
-        <FPcategoryEdit/>
-      </v-tab-item>
-      <v-tab-item
-        :value="'FPcatGroupEdit'"
-      >
-        <FPcatGroupEdit/>
-      </v-tab-item>
-      <v-tab-item
-        :value="'FPcategoryEdit'"
+        :value="'FPcategory'"
       >
         <FPcategoryEdit/>
       </v-tab-item>
@@ -45,27 +35,23 @@ export default {
     FPCategoriesTables
   },
   computed: {
-    itemMode () {
-      return this.$store.getters.itemMode
+    itemMode: {
+      get: function () {
+        return this.$store.getters.itemMode
+      }
     },
     FPcategoriesMode: {
       get: function () {
         const itemMode = this.$store.getters.itemMode
         let categoriesMode = ''
         switch (itemMode) {
-          case 'FPcatGroupCreate':
-            categoriesMode = 'FPcatGroupCreate'
+          case 'FPcatGroup':
+            categoriesMode = 'FPcatGroup'
             this.$store.dispatch('chgTableMode', 'FPcatGroups')
             break
-          case 'FPcategoryCreate':
-            categoriesMode = 'FPcategoryCreate'
+          case 'FPcategory':
+            categoriesMode = 'FPcategory'
             this.$store.dispatch('chgTableMode', 'FPcategories')
-            break
-          case 'FPcatGroupEdit':
-            categoriesMode = 'FPcatGroupEdit'
-            break
-          case 'FPcategoryEdit':
-            categoriesMode = 'FPcategoryEdit'
             break
           default:
             categoriesMode = 'FPcategoriesDefault'

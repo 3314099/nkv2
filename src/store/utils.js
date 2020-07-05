@@ -37,6 +37,10 @@ export default {
     }
   },
   actions: {
+    resetStdItems ({ dispatch }) {
+      dispatch('chgStdFPCatGroup', {})
+      dispatch('chgStdFPTagGroup', {})
+    },
     changeToClipboard ({ commit }, val) {
       commit('changeToClipboard', val)
     },
@@ -46,7 +50,7 @@ export default {
     clearFields ({ commit }) {
       commit('chgSearchField', '')
       commit('chgCommentField', '')
-      commit('chgRating', 9)
+      commit('chgRating', 1)
     },
     chgEditItem ({ commit }, editItem) {
       commit('chgEditItem', editItem)

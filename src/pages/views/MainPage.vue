@@ -97,6 +97,8 @@ export default {
     this.MXuploadFPsecGroups()
     this.MXuploadFPCatGroups()
     this.MXuploadFPCategories()
+    this.MXuploadFPtagGroups()
+    this.MXuploadFPTags()
   },
   created () {
   },

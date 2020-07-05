@@ -99,26 +99,32 @@ export default {
   methods: {
     toChangePropertyTabMode (propertyTabMode) {
       this.$store.dispatch('chgPropertyTabMode', propertyTabMode)
+      this.$store.dispatch('resetStdItems')
+      let chgItemMode = ''
+      let chgTableMode = ''
       switch (propertyTabMode) {
         case 'FPsectAndGrp':
-          this.$store.dispatch('chgTableMode', 'FPsections')
+          chgItemMode = 'FPsections'
+          chgTableMode = 'FPsections'
           break
         case 'FPaccounts':
-          this.$store.dispatch('chgTableMode', 'zzzzzzzz')
           break
         case 'FPfilters':
-          this.$store.dispatch('chgTableMode', 'zzzzzzzzz')
           break
         case 'FPcategories':
-          this.$store.dispatch('chgTableMode', 'FPcategories')
+          chgItemMode = 'FPcategories'
+          chgTableMode = 'FPcategories'
           break
         case 'FPtags':
-          this.$store.dispatch('chgTableMode', 'zzzzzzz')
+          chgItemMode = 'default'
+          chgTableMode = 'FPtags'
           break
         default:
-          this.$store.dispatch('chgTableMode', 'zzzz')
       }
-      this.$store.dispatch('clearModes')
+      this.$store.dispatch('chgTableMode', chgTableMode)
+      this.$store.dispatch('chgItemMode', chgItemMode)
+      this.$store.dispatch('chgEditMode', '')
+      this.$store.dispatch('chgLeftBarMode')
       this.$store.dispatch('clearFields')
       this.$store.dispatch('chgEditItem', {})
     }

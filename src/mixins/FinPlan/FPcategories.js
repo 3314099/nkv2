@@ -3,14 +3,14 @@ export default {
   mixins: [utils],
   methods: {
     MXFPcatGroups () {
-      return this.$store.getters.FPcatGroups.filter((catGroup) => catGroup.id) || []
+      return this.$store.getters.FPcatGroups.filter((item) => item.id) || []
     },
     MXFPcatGroupsSortedByVisibleButton () {
       return this.UsortByVisibleButton(this.MXFPcatGroups())
     },
     MXFPcatGroupsSortedBySortButton () {
       return this.MXFPcatGroupsSortedByVisibleButton() ? this.UsortBySortButton(
-        this.MXFPcatGroupsSortedByVisibleButton()) : []
+        this.MXFPcatGroupsSortedByVisibleButton(), this.$store.getters.sortButton) : []
     },
     MXsortedRuEnFPcatGroups () {
       return this.UsortRuEnArray(this.MXFPcatGroupsSortedBySortButton(), this.UsearchField())
@@ -18,8 +18,12 @@ export default {
     MXLBFPcatGroups () {
       return this.MXFPcatGroups()
     },
+    MXLBFPcatGroupsSortedBySortButton () {
+      return this.MXLBFPcatGroups() ? this.UsortBySortButton(
+        this.MXLBFPcatGroups(), this.$store.getters.LBsortButton) : []
+    },
     MXsortedRuEnLBFPcatGroups () {
-      return this.UsortRuEnArray(this.MXLBFPcatGroups(), this.ULBsearchField())
+      return this.UsortRuEnArray(this.MXLBFPcatGroupsSortedBySortButton(), this.ULBsearchField())
     },
     MXFPcategories () {
       return this.$store.getters.FPcategories
@@ -29,7 +33,7 @@ export default {
     },
     MXFPcategoriesSortedBySortButton () {
       return this.MXFPcategoriesSortedByVisibleButton() ? this.UsortBySortButton(
-        this.MXFPcategoriesSortedByVisibleButton()) : []
+        this.MXFPcategoriesSortedByVisibleButton(), this.$store.getters.sortButton) : []
     },
     MXsortedRuEnFPcategories () {
       return this.UsortRuEnArray(this.MXFPcategoriesSortedBySortButton(), this.UsearchField())

@@ -4,7 +4,12 @@
       flat
     >
       <div class="d-flex justify-start justify-space-between">
-        <div>
+        <div v-if="getEditMode() === 'remove'" class="d-flex justify-center flex-wrap">
+          <div><h1>Вы действительно хотите удалить группу тэгов?</h1></div>
+
+          <h2>Это приведет к удалению всех тэгов в группе.</h2>
+        </div>
+        <div v-else>
           <div class="d-flex justify-space-between">
             <div>
               <v-text-field
@@ -12,7 +17,7 @@
                 v-model="titleField"
                 class="pa-1"
                 style="min-width: 400px"
-                label="Наименование группы категорий"
+                label="Наименование группы тэгов"
                 type: String
                 hint="Не менее 3-х и не более 15-ти символов"
                 :error-messages="titleFieldErrors"
@@ -59,6 +64,15 @@
           <div class="d-flex justify-space-around flex-column align-center ">
             <div v-if="getEditMode() === 'edit'">
               <v-btn
+                @click="chgItemMode('FPtagsGroup')"
+                class="mx-2"
+                outlined
+                color="red"
+              >Удалить
+              </v-btn>
+            </div>
+            <div v-if="getEditMode() === 'remove'">
+              <v-btn
                 @click="button('remove')"
                 class="mx-2"
                 outlined
@@ -75,7 +89,7 @@
               >Отменить
               </v-btn>
             </div>
-            <div>
+            <div v-if="getEditMode() !== 'remove'">
               <v-btn
                 class="mx-2"
                 outlined
@@ -95,10 +109,10 @@
 <script>
 import { eventEmitter } from '@/main'
 import { validationMixin } from 'vuelidate'
-import FPcategories from '@/mixins/FinPlan/FPcategories.js'
+import FPtags from '@/mixins/FinPlan/FPtags.js'
 export default {
-  name: 'catGroupEdit',
-  mixins: [validationMixin, FPcategories],
+  name: 'tagsGroupEdit',
+  mixins: [validationMixin, FPtags],
   components: {
   },
   validations: {
@@ -153,7 +167,7 @@ export default {
     },
     valTitleField () {
       let unique = true
-      const findUnique = this.MXFPcatGroups()
+      const findUnique = this.MXFPtagGroups()
         .find(item => item.title.toLowerCase() === this.titleField.toLowerCase())
       if (findUnique) { unique = false }
       if (this.getEditItem().title) {
@@ -198,6 +212,11 @@ export default {
     getEditItem () {
       return this.$store.getters.editItem
     },
+    chgItemMode (itemMode) {
+      this.$store.dispatch('chgItemMode', itemMode)
+      this.$store.dispatch('chgEditMode', 'remove')
+      this.$store.dispatch('chgLeftBarMode')
+    },
     toChgByEditItem () {
       if (this.getEditItem().id) {
         this.$store.dispatch('chgSearchField', this.getEditItem().title)
@@ -219,7 +238,7 @@ export default {
           item.comment = this.commentField
           item.rating = this.rating
           item.visible = true
-          this.MXtoCreateFPCatGroup(item)
+          this.MXtoCreateFPTagGroup(item)
           break
         case 'edit':
           if (this.$v.$invalid) {
@@ -231,11 +250,11 @@ export default {
           item.comment = this.commentField
           item.rating = this.rating
           item.visible = true
-          this.MXtoEditFPCatGroup(item)
+          this.MXtoEditFPtagGroup(item)
           break
         case 'remove':
           this.$store.dispatch('chgLoading', 'true')
-          this.MXtoRemoveFPCatGroup(this.getEditItem().id)
+          this.MXtoRemoveFPTagGroup(this.getEditItem().id)
           break
         default: // cancel
           break
@@ -248,6 +267,7 @@ export default {
       this.$store.dispatch('chgItemMode', 'default')
       this.$store.dispatch('chgEditMode', '')
       this.$store.dispatch('chgEditItem', {})
+      this.$store.dispatch('chgStdFPTagGroup', {})
     }
   }
 }

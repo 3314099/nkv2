@@ -82,7 +82,6 @@ export default {
     },
     updateFPCatGroups ({ state, commit }, FPcatGroups) {
       commit('UPDATE_FP_CAT_GROUPS', FPcatGroups)
-      commit('UPDATE_FP_CATEGORIES', state.FPcategories)
     },
     async fetchFPCategories ({ commit, dispatch }) {
       try {
@@ -183,34 +182,7 @@ export default {
     },
     UPDATE_FP_CATEGORIES (state, preload) {
       if (preload) {
-        const newFPcategories = [...preload]
-        newFPcategories.forEach((FPcategory) => {
-          FPcategory.type = 'FPCategory'
-          FPcategory.parentVisible = true
-          const catGroup = state.FPcatGroups
-            .find(FPcatGroup => FPcatGroup.id === FPcategory.parentId)
-          if (catGroup) {
-            FPcategory.parentTitle = catGroup.title
-            FPcategory.parentRating = catGroup.rating
-            FPcategory.parentComment = catGroup.comment
-            !FPcategory.catVisible
-              ? FPcategory.visible = false : FPcategory.visible = true
-            if (!catGroup.visible) {
-              FPcategory.parentVisible = false
-              FPcategory.visible = false
-            } else {
-              FPcategory.parentVisible = true
-            }
-          } else {
-            FPcategory.parentId = ''
-            FPcategory.parentTitle = 'Без группы'
-            FPcategory.parentRating = 1
-            FPcategory.parentComment = ''
-            FPcategory.parentVisible = true
-          }
-        }
-        )
-        state.FPcategories = newFPcategories
+        state.FPcategories = preload
       } else {
         state.FPcategories = []
       }

@@ -7,22 +7,12 @@
         <FPsectAndGrpDefault/>
       </v-tab-item>
       <v-tab-item
-        :value="'FPsectionCreate'"
+        :value="'FPsection'"
       >
         <FPsectionEdit/>
       </v-tab-item>
       <v-tab-item
-        :value="'FPsecGroupCreate'"
-      >
-        <FPsecGroupEdit/>
-      </v-tab-item>
-      <v-tab-item
-        :value="'FPsectionEdit'"
-      >
-        <FPsectionEdit/>
-      </v-tab-item>
-      <v-tab-item
-        :value="'FPsecGroupEdit'"
+        :value="'FPsecGroup'"
       >
         <FPsecGroupEdit/>
       </v-tab-item>
@@ -45,28 +35,21 @@ export default {
     FPSectAndGrpTables
   },
   computed: {
-    itemMode () {
-      return this.$store.getters.itemMode
+    itemMode: {
+      get: function () {
+        return this.$store.getters.itemMode
+      }
     },
     FPsectionsAndGroupsMode: {
       get: function () {
-        const itemMode = this.$store.getters.itemMode
         let sectionsAndGroupsMode = ''
-        switch (itemMode) {
-          case 'FPsectionCreate':
-            sectionsAndGroupsMode = 'FPsectionCreate'
+        switch (this.$store.getters.itemMode) {
+          case 'FPsection':
+            sectionsAndGroupsMode = 'FPsection'
             this.$store.dispatch('chgTableMode', 'FPsections')
             break
-          case 'FPsecGroupCreate':
-            sectionsAndGroupsMode = 'FPsecGroupCreate'
-            this.$store.dispatch('chgTableMode', 'FPsecGroups')
-            break
-          case 'FPsectionEdit':
-            sectionsAndGroupsMode = 'FPsectionEdit'
-            this.$store.dispatch('chgTableMode', 'FPsections')
-            break
-          case 'FPsecGroupEdit':
-            sectionsAndGroupsMode = 'FPsecGroupEdit'
+          case 'FPsecGroup':
+            sectionsAndGroupsMode = 'FPsecGroup'
             this.$store.dispatch('chgTableMode', 'FPsecGroups')
             break
           default:

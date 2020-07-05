@@ -27,7 +27,7 @@ export default {
     },
     MXFPSecGroupsSortedBySortButton () {
       return this.MXFPSecGroupsSortedByVisibleButton() ? this.UsortBySortButton(
-        this.MXFPSecGroupsSortedByVisibleButton()) : []
+        this.MXFPSecGroupsSortedByVisibleButton(), this.$store.getters.sortButton) : []
     },
     MXsortedRuEnFPsecGroups () {
       return this.UsortRuEnArray(this.MXFPSecGroupsSortedBySortButton(), this.UsearchField())

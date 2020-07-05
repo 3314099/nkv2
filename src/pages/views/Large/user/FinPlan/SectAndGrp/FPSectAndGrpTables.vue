@@ -117,13 +117,13 @@
 </template>
 
 <script>
-import FPsectionsList from '@/components/FinPlan/SectAndGrp/FPsectionsList'
 import FPsecGroupsList from '@/components/FinPlan/SectAndGrp/FPsecGroupsList'
+import FPsectionsList from '@/components/FinPlan/SectAndGrp/FPsectionsList'
 export default {
   name: 'FPSectAndGrpTables',
   components: {
-    FPsectionsList,
-    FPsecGroupsList
+    FPsecGroupsList,
+    FPsectionsList
   },
   computed: {
     loading () {
@@ -161,7 +161,7 @@ export default {
       }
     },
     visibleBtn () {
-      return this.$store.getters.RBtn
+      return this.$store.getters.visibleButton
     },
     FPsectionsAndGroupsTable () {
       if (this.$store.getters.tableMode) {
@@ -171,23 +171,19 @@ export default {
       }
     },
     disableFPTableMode () {
-      const itemMode = this.$store.getters.itemMode
+      const itemMode = this.$store.getters.editMode
       let disableTableMode = ''
-      switch (itemMode) {
-        case 'FPsectionCreate':
-          disableTableMode = 'FPsecGroups'
-          break
-        case 'FPsectionEdit':
-          disableTableMode = 'FPsecGroups'
-          break
-        case 'FPsecGroupCreate':
-          disableTableMode = 'FPsections'
-          break
-        case 'FPsecGroupEdit':
-          disableTableMode = 'FPsections'
-          break
-        default:
-          disableTableMode = ''
+      if (itemMode === 'create' || itemMode === 'edit') {
+        switch (this.$store.getters.itemMode) {
+          case 'FPsection':
+            disableTableMode = 'FPsecGroups'
+            break
+          case 'FPsecGroup':
+            disableTableMode = 'FPsections'
+            break
+          default:
+            disableTableMode = ''
+        }
       }
       return disableTableMode
     },
@@ -211,19 +207,7 @@ export default {
       this.$store.dispatch('chgTableMode', tableMode)
     },
     chgVisibleBtn () {
-      let visibleBtn = 'all'
-      switch (this.visibleBtn) {
-        case 'all':
-          visibleBtn = 'visible'
-          break
-        case 'visible':
-          visibleBtn = 'unvisible'
-          break
-        case 'unvisible':
-          visibleBtn = 'all'
-          break
-      }
-      this.$store.dispatch('chgRBtn', visibleBtn)
+      this.$store.dispatch('chgVisibleButton')
     }
   }
 }

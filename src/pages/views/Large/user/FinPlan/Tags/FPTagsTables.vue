@@ -37,22 +37,12 @@
           v-model="sortButton"
           mandatory
         >
-          <v-btn
-            active-class="true"
-          >
-            <v-icon>mdi-sort-alphabetical-ascending</v-icon>
-          </v-btn>
-          <v-btn>
-            <v-icon
-              v-if="FPcategoriesTable === 'FPcatGroups'"
-            >mdi-star-outline</v-icon>
-            <v-icon
-              v-else
-            >mdi-folder-star-outline</v-icon>
-          </v-btn>
-          <v-btn v-if="FPcategoriesTable !== 'FPcatGroups'">
+          <v-btn active-class="true">
             <v-icon
             >mdi-sort-alphabetical-variant</v-icon>
+          </v-btn>
+          <v-btn>
+            <v-icon>mdi-folder-star-outline</v-icon>
           </v-btn>
         </v-btn-toggle>
       </v-col>
@@ -73,31 +63,17 @@
                 <v-divider class="my-3"></v-divider>
               </v-col>
               <v-col
-                cols="4"
+                cols="1"
                 class="d-flex justify-center"
               >
                 <div>
                   <v-chip
-                    :disabled="disableFPTableMode === 'FPcatGroups'"
                     class="mx-2"
                     small
                     color="teal"
-                    :text-color= "FPcategoriesTable === 'FPcatGroups' ? 'white' : 'black'"
-                    :outlined= "FPcategoriesTable !== 'FPcatGroups'"
-                    @click="chgTableMode('FPcatGroups')"
+                    text-color="white"
                   >
-                    <h3>Группы категорий</h3>
-                  </v-chip>
-                  <v-chip
-                    :disabled="disableFPTableMode === 'FPcategories'"
-                    class="mx-2"
-                    small
-                    color="teal"
-                    :text-color= "FPcategoriesTable === 'FPcategories' ? 'white' : 'black'"
-                    :outlined= "FPcategoriesTable === 'FPcategories' ? false : true"
-                    @click="chgTableMode('FPcategories')"
-                  >
-                    <h3>Категории</h3>
+                    <h3>Тэги</h3>
                   </v-chip>
                 </div>
               </v-col>
@@ -109,29 +85,16 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-window
-      v-model="winMode"
-      class="my-2"
-      vertical
-    >
-      <v-window-item>
-        <FPcatGroupsList/>
-      </v-window-item>
-      <v-window-item>
-        <FPcategoriesList/>
-      </v-window-item>
-    </v-window>
+        <FPtagsList/>
   </div>
 </template>
 
 <script>
-import FPcatGroupsList from '@/components/FinPlan/Categories/FPcatGroupsList'
-import FPcategoriesList from '@/components/FinPlan/Categories/FPcategoriesList'
+import FPtagsList from '@/components/FinPlan/Tags/FPtagsList'
 export default {
-  name: 'FPCategoriesTables',
+  name: 'FPTagsTables',
   components: {
-    FPcatGroupsList,
-    FPcategoriesList
+    FPtagsList
   },
   computed: {
     loading () {
@@ -144,10 +107,7 @@ export default {
           case 'rating':
             sortButton = 1
             break
-          case 'parentAlphabet':
-            sortButton = 2
-            break
-          default: // alphabet
+          default: // parentAlphabet
             sortButton = 0
             break
         }
@@ -156,11 +116,7 @@ export default {
       set: function (sortButton) {
         switch (sortButton) {
           case 1:
-            this.FPcategoriesTable === 'FPcatGroups'
-              ? sortButton = 'rating' : sortButton = 'parentRating'
-            break
-          case 2:
-            sortButton = 'parentAlphabet'
+            sortButton = 'rating'
             break
           default: // 0
             sortButton = 'alphabet'
@@ -172,48 +128,31 @@ export default {
     visibleBtn () {
       return this.$store.getters.visibleButton
     },
-    FPcategoriesTable () {
-      if (this.$store.getters.tableMode) {
-        return this.$store.getters.tableMode
-      } else {
-        return 'FPcategories'
-      }
-    },
     itemMode: {
       get: function () {
         return this.$store.getters.itemMode
       }
     },
     disableFPTableMode () {
-      const itemMode = this.$store.getters.editMode
+      const itemMode = this.$store.getters.itemMode
       let disableTableMode = ''
-      if (itemMode === 'create' || itemMode === 'edit') {
-        switch (this.$store.getters.itemMode) {
-          case 'FPcatGroup':
-            disableTableMode = 'FPcategories'
-            break
-          case 'FPcategory':
-            disableTableMode = 'FPcatGroups'
-            break
-          default:
-            disableTableMode = ''
-        }
-      }
-      return disableTableMode
-    },
-    winMode () {
-      let winMode = 0
-      switch (this.FPcategoriesTable) {
-        case 'FPcatGroups':
-          winMode = 0
+      switch (itemMode) {
+        case 'FPcatGroupCreate':
+          disableTableMode = 'FPcategories'
           break
-        case 'FPcategories':
-          winMode = 1
+        case 'FPcatGroupEdit':
+          disableTableMode = 'FPcategories'
+          break
+        case 'FPcategoryCreate':
+          disableTableMode = 'FPcatGroups'
+          break
+        case 'FPcategoryEdit':
+          disableTableMode = 'FPcatGroups'
           break
         default:
-          winMode = 0
+          disableTableMode = ''
       }
-      return winMode
+      return disableTableMode
     }
   },
   methods: {

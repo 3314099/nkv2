@@ -66,7 +66,7 @@
       </v-btn>
         <v-btn
           class = "button"
-          @click="changeRMB('CreditCalc')"
+          @click="changeRMB('store')"
         >
           <div class="img img-size">
             <img

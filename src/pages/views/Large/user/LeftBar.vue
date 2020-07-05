@@ -13,6 +13,9 @@
           <LBselFPCatGroup/>
         </v-window-item>
         <v-window-item>
+          <LBselFPTagGroup/>
+        </v-window-item>
+        <v-window-item>
           <h1>LeftBar3</h1>
         </v-window-item>
       </v-window>
@@ -23,41 +26,44 @@
 <script>
 import leftPanelButtons from '@/components/LeftBar/leftPanelButtons'
 import LBselFPCatGroup from '@/components/FinPlan/Categories/LBselFPCatGroup'
+import LBselFPTagGroup from '@/components/FinPlan/Tags/LBselFPTagGroup'
 export default {
   name: 'LeftBar',
   components: {
     leftPanelButtons,
-    LBselFPCatGroup
+    LBselFPCatGroup,
+    LBselFPTagGroup
   },
   computed: {
     leftBarMode () {
-      const itemMode = this.$store.getters.itemMode
       let leftBarMode = ''
-      switch (itemMode) {
-        case 'FPcategoryCreate':
+      switch (this.$store.getters.leftBarMode) {
+        case 'selFPCatGroups':
           leftBarMode = 'selFPCatGroups'
           break
-        case 'FPcategoryEdit':
-          leftBarMode = 'selFPCatGroups'
+        case 'selFPTagGroups':
+          leftBarMode = 'selFPTagGroups'
           break
         default:
           leftBarMode = ''
           break
       }
-      this.$store.dispatch('chgLbMode', leftBarMode)
       return leftBarMode
     },
     LMWinMode () {
       let LMWinMode = 0
-      switch (this.leftBarMode) {
+      switch (this.$store.getters.leftBarMode) {
         case 'calendar':
           LMWinMode = 0
           break
         case 'selFPCatGroups':
           LMWinMode = 1
           break
-        case 'currency':
+        case 'selFPTagGroups':
           LMWinMode = 2
+          break
+        case 'currency':
+          LMWinMode = 3
           break
         default:
           LMWinMode = 0

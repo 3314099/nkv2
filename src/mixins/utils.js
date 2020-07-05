@@ -1,5 +1,20 @@
 export default {
   methods: {
+    chgVisibleBtn () {
+      let visibleBtn = 'all'
+      switch (this.visibleBtn) {
+        case 'all':
+          visibleBtn = 'visible'
+          break
+        case 'visible':
+          visibleBtn = 'unvisible'
+          break
+        case 'unvisible':
+          visibleBtn = 'all'
+          break
+      }
+      this.$store.dispatch('chgRBtn', visibleBtn)
+    },
     UfilterByType (array, field, val) { // создает новый массив объектов с учетом свойства объекта и заначения
       return [...array].filter(o => o[field] === val)
     },
@@ -45,7 +60,7 @@ export default {
     },
     UsortByVisibleButton (array) {
       if (array) {
-        switch (this.$store.getters.RBtn) {
+        switch (this.$store.getters.visibleButton) {
           case 'visible':
             array = this.UfilterByType(array, 'visible', true)
             break
@@ -60,10 +75,27 @@ export default {
         return []
       }
     },
-    UsortBySortButton (array) {
+    UsortByLBVisibleButton (array) {
+      if (array) {
+        switch (this.$store.getters.LBsortButton) {
+          case 'visible':
+            array = this.UfilterByType(array, 'visible', true)
+            break
+          case 'unvisible':
+            array = this.UfilterByType(array, 'visible', false)
+            break
+          default: // 'all'
+            break
+        }
+        return array
+      } else {
+        return []
+      }
+    },
+    UsortBySortButton (array, button) {
       if (array) {
         array = this.UsortObjectsArray(array, 'title', false) // 'titleAlphabet'
-        switch (this.sortButton()) {
+        switch (button) {
           case 'parentAlphabet':
             array = this.UsortObjectsArray(array.reverse(), 'parentTitle', false)
             break

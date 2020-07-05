@@ -12,7 +12,7 @@
         >
           <li
             class=""
-            v-for="(FPcat, i) in this.FPcategoriesList()"
+            v-for="(FPcat, i) in FPcategoriesList"
             :key="i"
           >
             <v-card
@@ -50,7 +50,9 @@
                   class="ml-2"
                   @click="chgFPCategoryVisible(FPcat)"
                   icon>
-                  <v-icon>mdi-eye-off-outline</v-icon>
+                  <v-icon
+                    :color="!FPcat.parentId ? 'red' : ''"
+                  >mdi-eye-off-outline</v-icon>
                 </v-btn>
                 <v-tooltip left>
                   <template v-slot:activator="{ on, attrs }">
@@ -167,14 +169,46 @@ export default {
     },
     FPcategoriesLength () {
       return !!this.MXsortedRuEnFPcategories().length
+    },
+    FPcategoriesList () {
+      const newFPcategories = [...this.MXsortedRuEnFPcategories()]
+      if (newFPcategories) {
+        newFPcategories.forEach((FPcategory) => {
+          FPcategory.type = 'FPCategory'
+          FPcategory.parentVisible = true
+          const catGroup = [...this.MXFPcatGroups()]
+            .find(FPcatGroup => FPcatGroup.id === FPcategory.parentId)
+          if (catGroup) {
+            FPcategory.parentTitle = catGroup.title
+            FPcategory.parentRating = catGroup.rating
+            FPcategory.parentComment = catGroup.comment
+            !FPcategory.catVisible
+              ? FPcategory.visible = false : FPcategory.visible = true
+            if (!catGroup.visible) {
+              FPcategory.parentVisible = false
+              FPcategory.visible = false
+            } else {
+              FPcategory.parentVisible = true
+            }
+          } else {
+            FPcategory.parentId = ''
+            FPcategory.parentTitle = 'Без группы'
+            FPcategory.parentRating = 1
+            FPcategory.parentComment = ''
+            FPcategory.parentVisible = true
+            FPcategory.visible = false
+          }
+        }
+        )
+        return newFPcategories
+      } else {
+        return []
+      }
     }
   },
   methods: {
-    FPcategoriesList () {
-      return [...this.MXsortedRuEnFPcategories()] || []
-    },
     editFPCategory (FPcategory) {
-      this.$store.dispatch('chgItemMode', 'FPcategoryEdit')
+      this.$store.dispatch('chgItemMode', 'FPcategory')
       this.$store.dispatch('chgEditItem', FPcategory)
       this.$store.dispatch('chgEditMode', 'edit')
       eventEmitter.$emit('toChgByEditItem')
