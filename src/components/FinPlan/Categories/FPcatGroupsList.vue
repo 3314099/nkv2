@@ -105,13 +105,20 @@ export default {
     loading () {
       return this.$store.getters.loading
     },
+    tableMode () {
+      if (this.$store.getters.tableMode) {
+        return this.$store.getters.tableMode
+      } else {
+        return ''
+      }
+    },
     FPcatGroups () {
-      return [...this.MXsortedRuEnFPcatGroups()]
+      return this.tableMode === 'FPcatGroups' ? [...this.MXsortedRuEnFPcatGroups()] : []
     }
   },
   methods: {
     editFPCatGroup (FPcatGroup) {
-      this.$store.dispatch('chgItemMode', 'FPcatGroupEdit')
+      this.$store.dispatch('chgItemMode', 'FPcatGroup')
       this.$store.dispatch('chgEditItem', FPcatGroup)
       this.$store.dispatch('chgEditMode', 'edit')
       eventEmitter.$emit('toChgByEditItem')

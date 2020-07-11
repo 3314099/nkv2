@@ -21,6 +21,9 @@ export default {
         case 'properties-FPcategories-FPcategory-create':
           leftBarMode = 'selFPCatGroups'
           break
+        case 'properties-FPcategories-FPcategory-edit':
+          leftBarMode = 'selFPCatGroups'
+          break
         case 'properties-FPtags-default-':
           leftBarMode = 'selFPTagGroups'
           break

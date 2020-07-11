@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div v-if="!!loading && !FPsecGroups.length" class="text-center">
+    <div v-if="!!loading && !FPsecGroupsList.length" class="text-center">
       <h1 class="font-weight-bold display-1 teal--text ">Список пуст</h1>
     </div>
-    <div v-if="FPsecGroups.length">
+    <div v-if="FPsecGroupsList.length">
       <ul class="pl-0 pt-0 mt-1">
         <v-container
           id="scroll-target"
@@ -12,7 +12,7 @@
         >
           <li
             class=""
-            v-for="(FPsecGroup, i) in FPsecGroups"
+            v-for="(FPsecGroup, i) in FPsecGroupsList"
             :key="i"
           >
             <v-card
@@ -104,8 +104,15 @@ export default {
     loading () {
       return this.$store.getters.loading
     },
-    FPsecGroups () {
-      return this.MXsortedRuEnFPsecGroups()
+    tableMode () {
+      if (this.$store.getters.tableMode) {
+        return this.$store.getters.tableMode
+      } else {
+        return ''
+      }
+    },
+    FPsecGroupsList () {
+      return this.tableMode === 'FPsecGroups' ? [...this.MXsortedRuEnFPsecGroups()] : []
     }
   },
   methods: {

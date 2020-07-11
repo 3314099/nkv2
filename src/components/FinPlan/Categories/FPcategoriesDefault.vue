@@ -6,7 +6,6 @@
       <div class="d-flex justify-start justify-space-between">
         <div class="d-flex justify-space-between">
           <v-text-field
-            autofocus
             class="pa-1"
             style="min-width: 280px"
             label="Строка поиска"

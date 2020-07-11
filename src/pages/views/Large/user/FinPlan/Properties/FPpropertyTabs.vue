@@ -120,6 +120,9 @@ export default {
           chgTableMode = 'FPtags'
           break
         default:
+          chgItemMode = 'default'
+          chgTableMode = 'FPsections'
+          break
       }
       this.$store.dispatch('chgTableMode', chgTableMode)
       this.$store.dispatch('chgItemMode', chgItemMode)

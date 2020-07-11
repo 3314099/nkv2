@@ -204,6 +204,7 @@ export default {
   },
   methods: {
     chgFPTableMode (tableMode) {
+      this.$store.dispatch('chgSortButton', 'alphabet')
       this.$store.dispatch('chgTableMode', tableMode)
     },
     chgVisibleBtn () {

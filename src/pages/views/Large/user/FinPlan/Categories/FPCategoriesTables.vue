@@ -39,21 +39,33 @@
         >
           <v-btn
             active-class="true"
+            @click="chgSortBtn('alphabet')"
           >
             <v-icon>mdi-sort-alphabetical-ascending</v-icon>
           </v-btn>
-          <v-btn>
-            <v-icon
-              v-if="FPcategoriesTable === 'FPcatGroups'"
-            >mdi-star-outline</v-icon>
-            <v-icon
-              v-else
-            >mdi-folder-star-outline</v-icon>
-          </v-btn>
-          <v-btn v-if="FPcategoriesTable !== 'FPcatGroups'">
-            <v-icon
-            >mdi-sort-alphabetical-variant</v-icon>
-          </v-btn>
+          <template
+            v-if="FPcategoriesTable === 'FPcatGroups'"
+          >
+            <v-btn
+              @click="chgSortBtn('rating')"
+            >
+              <v-icon>mdi-star-outline</v-icon>
+            </v-btn>
+          </template>
+          <template
+            v-else
+          >
+            <v-btn
+              @click="chgSortBtn('parentRating')"
+            >
+              <v-icon>mdi-folder-star-outline</v-icon>
+            </v-btn>
+            <v-btn
+              @click="chgSortBtn('parentAlphabet')"
+            >
+              <v-icon>mdi-sort-alphabetical-variant</v-icon>
+            </v-btn>
+          </template>
         </v-btn-toggle>
       </v-col>
       <v-col
@@ -153,20 +165,7 @@ export default {
         }
         return sortButton
       },
-      set: function (sortButton) {
-        switch (sortButton) {
-          case 1:
-            this.FPcategoriesTable === 'FPcatGroups'
-              ? sortButton = 'rating' : sortButton = 'parentRating'
-            break
-          case 2:
-            sortButton = 'parentAlphabet'
-            break
-          default: // 0
-            sortButton = 'alphabet'
-            break
-        }
-        this.$store.dispatch('chgSortButton', sortButton)
+      set: function (v) {
       }
     },
     visibleBtn () {
@@ -218,10 +217,14 @@ export default {
   },
   methods: {
     chgTableMode (tableMode) {
+      this.$store.dispatch('chgSortButton', 'alphabet')
       this.$store.dispatch('chgTableMode', tableMode)
     },
     chgVisibleBtn () {
       this.$store.dispatch('chgVisibleButton')
+    },
+    chgSortBtn (val) {
+      this.$store.dispatch('chgSortButton', val)
     }
   }
 }

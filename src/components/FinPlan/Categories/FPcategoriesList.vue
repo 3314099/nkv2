@@ -76,7 +76,7 @@
                   </span>
                 </v-col>
                 <v-col cols="12" md="3" class="ma-0 pa-0">
-                  <template v-if="!FPcat.parentId">
+                  <template v-if="!FPcat.newParentId">
                     <v-tooltip left>
                       <template v-slot:activator="{ on, attrs }">
                         <v-icon
@@ -84,7 +84,7 @@
                           class="ml-2"
                           v-bind="attrs"
                           v-on="on"
-                          :color="!FPcat.parentId ? 'red' : ''"
+                          :color="!FPcat.newParentId ? 'red' : ''"
                         >mdi-folder-remove-outline</v-icon>
                       </template>
                       <span>
@@ -92,7 +92,7 @@
                   </span>
                     </v-tooltip>
                   </template>
-                  <template v-if="FPcat.parentId">
+                  <template v-if="FPcat.newParentId">
                   <v-tooltip left>
                     <template v-slot:activator="{ on, attrs }">
                       <v-icon
@@ -163,6 +163,11 @@ import FPcategories from '@/mixins/FinPlan/FPcategories.js'
 export default {
   name: 'FPcategoriesList',
   mixins: [FPcategories],
+  data () {
+    return {
+      categoriesList: []
+    }
+  },
   computed: {
     loading () {
       return this.$store.getters.loading
@@ -170,15 +175,16 @@ export default {
     FPcategoriesLength () {
       return !!this.MXsortedRuEnFPcategories().length
     },
-    FPcategoriesList () {
-      const newFPcategories = [...this.MXsortedRuEnFPcategories()]
+    FPcategoriesArray () {
+      const newFPcategories = [...this.MXFPcategories()]
       if (newFPcategories) {
         newFPcategories.forEach((FPcategory) => {
           FPcategory.type = 'FPCategory'
           FPcategory.parentVisible = true
-          const catGroup = [...this.MXFPcatGroups()]
+          const catGroup = this.MXFPcatGroups()
             .find(FPcatGroup => FPcatGroup.id === FPcategory.parentId)
           if (catGroup) {
+            FPcategory.newParentId = catGroup.id
             FPcategory.parentTitle = catGroup.title
             FPcategory.parentRating = catGroup.rating
             FPcategory.parentComment = catGroup.comment
@@ -191,7 +197,7 @@ export default {
               FPcategory.parentVisible = true
             }
           } else {
-            FPcategory.parentId = ''
+            FPcategory.newParentId = ''
             FPcategory.parentTitle = 'Без группы'
             FPcategory.parentRating = 1
             FPcategory.parentComment = ''
@@ -204,11 +210,19 @@ export default {
       } else {
         return []
       }
+    },
+    FPcategoriesList () {
+      let newFPcategories = this.FPcategoriesArray
+      newFPcategories = this.UsortByVisibleButton(newFPcategories)
+      newFPcategories = this.UsortBySortButton(newFPcategories, this.$store.getters.sortButton)
+      newFPcategories = this.UsortRuEnArray(newFPcategories, this.UsearchField())
+      return newFPcategories
     }
   },
   methods: {
     editFPCategory (FPcategory) {
       this.$store.dispatch('chgItemMode', 'FPcategory')
+      this.$store.dispatch('chgLeftBarMode')
       this.$store.dispatch('chgEditItem', FPcategory)
       this.$store.dispatch('chgEditMode', 'edit')
       eventEmitter.$emit('toChgByEditItem')

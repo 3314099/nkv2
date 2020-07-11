@@ -8,7 +8,6 @@
           <div class="d-flex justify-space-between">
             <div>
               <v-text-field
-                autofocus
                 v-model="titleField"
                 class="pa-1"
                 style="min-width: 400px"

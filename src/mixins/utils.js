@@ -51,12 +51,25 @@ export default {
         return []
       }
     },
-    UsortObjectsArray (array, field, reverse = false) {
+    UsortObjectsArrayByNumber (array, field, reverse = false) {
       if (reverse) {
         return [...array].sort((a, b) => a[field] > b[field] ? 1 : -1).reverse()
       } else {
         return [...array].sort((a, b) => a[field] > b[field] ? 1 : -1)
       }
+    },
+    UsortObjectsArrayByText (array, field, reverse = false) {
+      array = array.sort(function (a, b) {
+        const nameA = a[field].toString().toLowerCase()
+        const nameB = b[field].toString().toLowerCase()
+        if (nameA < nameB) { return -1 }
+        if (nameA > nameB) { return 1 }
+        return 0
+      })
+      if (reverse) {
+        array = array.reverse()
+      }
+      return array
     },
     UsortByVisibleButton (array) {
       if (array) {
@@ -94,16 +107,20 @@ export default {
     },
     UsortBySortButton (array, button) {
       if (array) {
-        array = this.UsortObjectsArray(array, 'title', false) // 'titleAlphabet'
         switch (button) {
           case 'parentAlphabet':
-            array = this.UsortObjectsArray(array.reverse(), 'parentTitle', false)
+            array = this.UsortObjectsArrayByText([...array].reverse(), 'parentTitle', false)
             break
           case 'rating':
-            array = this.UsortObjectsArray(array, 'rating', true)
+            array = this.UsortObjectsArrayByText([...array], 'title', true)
+            array = this.UsortObjectsArrayByNumber([...array], 'rating', true)
             break
           case 'parentRating':
-            array = this.UsortObjectsArray(array, 'parentRating', true)
+            array = this.UsortObjectsArrayByText([...array], 'parentTitle', true)
+            array = this.UsortObjectsArrayByNumber([...array], 'parentRating', true)
+            break
+          default: // alphabet
+            array = this.UsortObjectsArrayByText([...array], 'title', false)
             break
         }
         return array

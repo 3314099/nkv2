@@ -29,7 +29,6 @@
         class="flex-grow-1 flex-shrink-0 pt-1"
       >
         <v-text-field
-          autofocus
           v-model="LBsearchField"
           class=""
           label="Поиск"

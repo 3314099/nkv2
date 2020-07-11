@@ -15,15 +15,15 @@ export default {
   data: () => ({
     date: new Date(),
     interva: null
-  }),
-  mounted: function () {
-    this.interval = setInterval(() => {
-      this.date = new Date()
-    })
-  },
-  beforeDestroy () {
-    // console.log('before Destroy')
-    clearInterval(this.interval)
-  }
+  })
+  // mounted: function () {
+  //   this.interval = setInterval(() => {
+  //     this.date = new Date()
+  //   })
+  // },
+  // beforeDestroy () {
+  //   // console.log('before Destroy')
+  //   clearInterval(this.interval)
+  // }
 }
 </script>
